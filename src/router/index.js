@@ -70,6 +70,13 @@ export const constantRoutes = [
   },
 
   // {
+  //   path: '/edit-user',
+  //   name: 'edit-user',
+  //   component: () => import('@/views/form/edit-user.vue'),
+  //   meta: { title: '用户管理', icon: 'user' }
+  // },
+
+  // {
   //   path: '/nested',
   //   component: Layout,
   //   redirect: '/nested/menu1',

@@ -1,77 +1,38 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-02-08 16:53:48
+ * @LastEditTime: 2021-02-22 10:45:19
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admin-template\src\views\borrow\index.vue
+-->
 <template>
-  <div class="app-container">
-    <el-input v-model="filterText" placeholder="Filter keyword" style="margin-bottom:30px;" />
-
-    <el-tree
-      ref="tree2"
-      :data="data2"
-      :props="defaultProps"
-      :filter-node-method="filterNode"
-      class="filter-tree"
-      default-expand-all
-    />
-
+  <div class="borrow-container">
+    <search-input v-on:search="search" placeholder="请输入图书关键字"></search-input>
   </div>
 </template>
 
 <script>
+import searchInput from '@/components/search-input.vue'
 export default {
+  components: { searchInput },
 
   data() {
     return {
-      filterText: '',
-      data2: [{
-        id: 1,
-        label: 'Level one 1',
-        children: [{
-          id: 4,
-          label: 'Level two 1-1',
-          children: [{
-            id: 9,
-            label: 'Level three 1-1-1'
-          }, {
-            id: 10,
-            label: 'Level three 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: 'Level one 2',
-        children: [{
-          id: 5,
-          label: 'Level two 2-1'
-        }, {
-          id: 6,
-          label: 'Level two 2-2'
-        }]
-      }, {
-        id: 3,
-        label: 'Level one 3',
-        children: [{
-          id: 7,
-          label: 'Level two 3-1'
-        }, {
-          id: 8,
-          label: 'Level two 3-2'
-        }]
-      }],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
+      searchValue: ''
     }
   },
   watch: {
-    filterText(val) {
-      this.$refs.tree2.filter(val)
-    }
+
   },
 
   methods: {
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
-    }
+    search(v) {
+        this.searchValue = v;
+        console.log(this.searchValue);
+        // this.handleCurrentChange(1);
+        // this.showList = this.contactList.filter(item => item.name.match(searchValue));
+   },
   }
 }
 </script>
