@@ -115,3 +115,27 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// localstroge 方法
+export function setLocalStorage(name, info) {
+  if (!name) return;
+  /* 转换为json格式字符串 */
+  if (info && typeof info === 'object') {
+      info.timeStamp = Math.round(new Date() / 1000);
+      info = JSON.stringify(info);
+  } else if (info && typeof info !== 'string') {
+      info = JSON.stringify(info);
+  }
+  window.localStorage.setItem(name, info);
+}
+
+export function getLocalStorage(name, defaultType = {}) {
+  if (!name) return;
+  let temp = window.localStorage[name];
+  return temp ? JSON.parse(temp) : defaultType;
+}
+
+export function delLocalStorage(name) {
+  if (!name) return;
+  window.localStorage.removeItem(name);
+}

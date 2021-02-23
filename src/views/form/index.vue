@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-23 15:53:32
+ * @LastEditTime: 2021-02-23 17:19:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\index.vue
@@ -15,10 +15,10 @@
     <div class="top-bar">
       <admin-button
         text="+ 新建用户"
-        @click="userDialogVisible = true"
+        @click="openCreateDialog"
       ></admin-button>
     </div>
-    <div class="content-wrapper" v-loading="loading">
+    <div class="content-wrapper">
       <div class="item-wrapper" v-if="userList.length">
         <div
           class="contact-item"
@@ -66,8 +66,11 @@
       </el-pagination>
     </div>
     <el-dialog
-    title="新建用户" :visible.sync="userDialogVisible" width="30%" destroy-on-close="true">
-      <edit-user @closeCreateDialog='closeCreateDialog'></edit-user>
+      v-if="userDialogVisible"
+      :title="dialogTitleValue" 
+      :visible.sync="userDialogVisible" 
+      width="30%">
+        <edit-user @closeCreateDialog='closeDialog'></edit-user>
     </el-dialog>
   </div>
 </template>
@@ -76,11 +79,13 @@
 import searchInput from "@/components/search-input.vue";
 import AdminButton from "@/components/admin-button.vue";
 import EditUser from './edit-user.vue';
+import { setLocalStorage } from '@/utils/index.js';
 export default {
   components: { searchInput, AdminButton, EditUser },
   data() {
     return {
       searchValue: "",
+      dialogTitleValue: "",
       userList: [
         {
           name: "张三",
@@ -114,7 +119,17 @@ export default {
       // this.handleCurrentChange(1);
       // this.showList = this.contactList.filter(item => item.name.match(searchValue));
     },
-    closeCreateDialog(){
+    openCreateDialog(){
+      this.dialogTitleValue = "新建用户";
+      this.userDialogVisible = true
+    },
+    editUser(item){
+      this.dialogTitleValue = "编辑用户";
+      console.log(item);
+      setLocalStorage('userItem', item);
+      this.userDialogVisible = true
+    },
+    closeDialog(){
       this.userDialogVisible = false;
     },
     handleSizeChange(val){

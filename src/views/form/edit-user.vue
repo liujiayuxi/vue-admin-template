@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-23 14:23:31
- * @LastEditTime: 2021-02-23 15:46:14
+ * @LastEditTime: 2021-02-23 17:28:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\edit-user.vue
@@ -38,7 +38,7 @@
 
     <el-form-item label="手机">
       <el-input
-        v-model="form.tel"
+        v-model="form.mobile"
         placeholder="请输入手机号码"
         maxlength="11"
         show-word-limit
@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { getLocalStorage, delLocalStorage } from '@/utils/index.js';
 export default {
   name: "edit-user",
   data() {
@@ -73,7 +74,7 @@ export default {
         type: "",
         name: "",
         username: "",
-        tel: "",
+        mobile: "",
         description: "",
       },
       roleList: [
@@ -88,7 +89,20 @@ export default {
       ],
     };
   },
+  mounted () {
+    this.getUserItem();
+  },
+  beforeDestroy () {
+    delLocalStorage('userItem');
+  },
   methods: {
+      getUserItem(){
+        let temp = getLocalStorage('userItem');
+        if(Object.keys(temp).length > 0){
+          this.$set(this.$data, 'form', temp)
+        }
+        console.log(this.form);
+      },
       cancel() {
           this.$emit('closeCreateDialog');
       },
