@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-23 14:16:06
+ * @LastEditTime: 2021-02-24 17:07:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\dashboard\index.vue
@@ -36,7 +36,7 @@
               ></el-input-number>
             </div>
             <div class="dashboard-container-book-item-btn">
-              <el-button>购买</el-button>
+              <el-button @click="showConfirm">购买</el-button>
               <el-button>加入购物车</el-button>
             </div>
           </div>
@@ -46,24 +46,32 @@
     </div>
     <div class="pagination-wrapper">
       <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageConfig.pageNum"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="pageConfig.pageSize"
-      layout="total, sizes, prev, pager, next"
-      :total="total">
-    </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageConfig.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageConfig.pageSize"
+        layout="total, sizes, prev, pager, next"
+        :total="total">
+      </el-pagination>
     </div>
+    <el-dialog 
+      v-if="showBuyVisible"
+      title="订单信息" 
+      :visible.sync="showBuyVisible" 
+      width="30%">
+      <confirm-order @closeOrderDialog="closeConfirm"></confirm-order>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import searchInput from "@/components/search-input.vue";
 import { mapGetters } from "vuex";
+import ConfirmOrder from './confirm-order.vue';
 
 export default {
-  components: { searchInput },
+  components: { searchInput, ConfirmOrder },
   name: "Dashboard",
   data() {
     return {
@@ -81,7 +89,8 @@ export default {
         pageNum: 1,
         pageSize: 20,
       },
-      total: 0
+      total: 0,
+      showBuyVisible: false
     };
   },
   computed: {
@@ -114,6 +123,12 @@ export default {
     },
     getBookList(){
 
+    },
+    showConfirm(){
+      this.showBuyVisible = true
+    },
+    closeConfirm(){
+      this.showBuyVisible = false
     }
   },
 };
