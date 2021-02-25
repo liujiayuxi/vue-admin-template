@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-24 11:00:46
- * @LastEditTime: 2021-02-24 11:02:40
+ * @LastEditTime: 2021-02-25 14:26:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\libraryInfo\index.vue
@@ -17,7 +17,7 @@
         name: "library-info",
         data() {
             return {
-                key: value
+                // key: value
             }
         },
         methods: {

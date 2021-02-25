@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-23 12:05:46
- * @LastEditors: your name
+ * @LastEditTime: 2021-02-25 14:50:24
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\main.js
  */
@@ -19,6 +19,8 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import echarts from 'echarts'
+import htmlToPdf from '@/utils/htmlToPdf'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -40,6 +42,9 @@ if (process.env.NODE_ENV === 'production') {
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
+Vue.use(htmlToPdf)
+
+Vue.prototype.$echarts = echarts;
 
 Vue.config.productionTip = false
 
