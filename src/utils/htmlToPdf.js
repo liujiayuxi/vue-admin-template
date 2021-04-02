@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-25 14:48:58
- * @LastEditTime: 2021-02-25 15:13:00
+ * @LastEditTime: 2021-04-01 17:30:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\utils\htmlToPdf.js
@@ -11,8 +11,8 @@ import html2Canvas from 'html2canvas'
 import JsPDF from 'jspdf'
 export default{
   install (Vue, options) {
-    Vue.prototype.getPdf = function (id) {
-      var title = this.htmlTitle
+    Vue.prototype.getPdf = function (id,title) {
+      // var title = this.htmlTitle
       html2Canvas(document.querySelector(id), {
         allowTaint: true
       }).then(function (canvas) {

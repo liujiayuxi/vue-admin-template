@@ -81,6 +81,19 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/announcement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Announcement',
+        component: () => import('@/views/announcement/index'),
+        meta: { title: '公告管理', icon: 'eye-open' }
+      }
+    ]
+  },
+
   // {
   //   path: '/edit-user',
   //   name: 'edit-user',
@@ -160,23 +173,36 @@ export const constantRoutes = [
         component: () => import('@/views/search/index'),
         meta: { title: '查询图书', icon: 'table' }
       },
+      // {
+      //   path: 'tree',
+      //   name: 'Tree',
+      //   component: () => import('@/views/buy/index'),
+      //   meta: { title: '购买图书', icon: 'form' }
+      // },
+      // {
+      //   path: 'borrow',
+      //   name: 'borrow',
+      //   component: () => import('@/views/borrow/index'),
+      //   meta: { title: '借阅图书', icon: 'link' }
+      // },
+      // {
+      //   path: 'give',
+      //   name: 'give',
+      //   component: () => import('@/views/give/index'),
+      //   meta: { title: '归还图书', icon: 'tree' }
+      // }
+    ]
+  },
+
+  {
+    path: '/rules',
+    component: Layout,
+    children: [
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/buy/index'),
-        meta: { title: '购买图书', icon: 'form' }
-      },
-      {
-        path: 'borrow',
-        name: 'borrow',
-        component: () => import('@/views/borrow/index'),
-        meta: { title: '借阅图书', icon: 'link' }
-      },
-      {
-        path: 'give',
-        name: 'give',
-        component: () => import('@/views/give/index'),
-        meta: { title: '归还图书', icon: 'tree' }
+        path: 'index',
+        name: 'Rules',
+        component: () => import('@/views/rules/index'),
+        meta: { title: '读者规则', icon: 'eye-open' }
       }
     ]
   },
