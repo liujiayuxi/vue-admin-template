@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-02 17:07:15
- * @LastEditTime: 2021-04-02 17:33:04
+ * @LastEditTime: 2021-04-02 17:34:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\rules\index.vue
@@ -21,8 +21,6 @@
 
 <style lang="scss" scoped>
 .rules{
-    .title{
-        
-    }
+    
 }
 </style>
