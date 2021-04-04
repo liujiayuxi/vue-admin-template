@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-04 19:43:27
+ * @LastEditTime: 2021-04-04 20:05:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -65,17 +65,20 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pageConfig.pageNum"
-        :page-sizes="[10, 20, 30, 50]"
-        :page-size="pageConfig.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
+      <div class="pagination-wrapper">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageConfig.pageNum"
+          :page-sizes="[10, 20, 30, 50]"
+          :page-size="pageConfig.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -123,6 +126,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
+      total: 0
     };
   },
   watch: {
@@ -176,6 +180,13 @@ export default {
   }
   &-content {
     border: 1px solid rgba(235, 238, 245, 1);
+    .pagination-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 30px;
+        margin-right: 30px;
+        padding-top: 17px;
+    }
   }
 }
 </style>
