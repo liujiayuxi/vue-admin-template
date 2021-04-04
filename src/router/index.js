@@ -63,8 +63,15 @@ export const constantRoutes = [
           path: 'index',
           name: 'Dashboard',
           component: () => import('@/views/dashboard/index'),
-          meta: { title: '采购图书', icon: 'dashboard' }
-        }
+          meta: { title: '图书管理', icon: 'dashboard' }
+        },
+        {
+          path: 'add-book',
+          name: 'Dashboard',
+          hidden: true,
+          component: () => import('@/views/dashboard/views/add-book.vue'),
+          meta: { title: '图书管理', icon: 'dashboard' }
+        },
       ]
   },
 
@@ -77,6 +84,19 @@ export const constantRoutes = [
         name: 'Form',
         component: () => import('@/views/form/index'),
         meta: { title: '用户管理', icon: 'user' }
+      }
+    ]
+  },
+  
+  {
+    path: '/records',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'records',
+        component: () => import('@/views/records/index'),
+        meta: { title: '借还记录', icon: 'link' }
       }
     ]
   },
@@ -207,6 +227,7 @@ export const constantRoutes = [
     ]
   },
 
+  
   // {
   //   path: 'external-link',
   //   component: Layout,

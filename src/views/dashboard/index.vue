@@ -1,88 +1,128 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-24 17:07:13
+ * @LastEditTime: 2021-04-04 10:00:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \vue-admin-template\src\views\dashboard\index.vue
+ * @FilePath: \vue-admin-template\src\views\search\index.vue
 -->
 <template>
-  <div class="dashboard-container">
-    <!-- <div class="dashboard-text">name: {{ name }}</div> -->
+  <div class="search-container">
     <search-input
       v-on:search="search"
       placeholder="请输入图书关键字"
     ></search-input>
-    <div class="dashboard-container-wrap">
-      <div class="dashboard-container-book" v-if="bookList.length">
-        <div
-          class="dashboard-container-book-item"
-          v-for="(item, index) in bookList"
-          :key="index"
-        >
-          <img src="@/assets/image/bookpic.jpg" />
-          <div class="dashboard-container-book-item-word">
-            <div class="dashboard-container-book-item-name">
-              {{ item.name }}
+    <div class="search-container-type">
+      <div class="search-container-top">
+        <tab-list :list="tabList" @change="changTab"></tab-list>
+        <el-button @click="addBook">上架图书</el-button>
+      </div>
+      <div class="search-container-wrap">
+        <div class="search-container-book" v-if="libraryBookList.length">
+          <div
+            class="search-container-book-item"
+            v-for="(item, index) in libraryBookList"
+            :key="index"
+          >
+            <div
+              class="search-container-book-item-type"
+              :style="{
+                color: getColor(item.type),
+                background: getBackground(item.type),
+              }"
+            >
+              {{ getText(item.type) }}
             </div>
-            <div class="dashboard-container-book-item-price">
-              价格：￥{{ item.price }}
+            <!-- <img src="@/assets/image/bookpic.jpg" /> -->
+            <div class="search-container-book-item-word">
+              <div class="search-container-book-item-name">
+                {{ item.name }}
+              </div>
+              <div class="search-container-book-item-btn">
+                <el-button @click="showDetail">查看详情</el-button>
+                <el-button @click="deleteBook(item.bookId)">下架</el-button>
+              </div>
             </div>
-            <div class="dashboard-container-book-item-number">
-              数量：<el-input-number
-                v-model="item.number"
-                :min="1"
-                :max="item.maxValue"
-              ></el-input-number>
-            </div>
-            <div class="dashboard-container-book-item-btn">
-              <el-button @click="showConfirm">购买</el-button>
-              <el-button>加入购物车</el-button>
-            </div>
+
+            <el-dialog
+              v-if="showDetailVisible"
+              title="详情"
+              :visible.sync="showDetailVisible"
+              width="30%"
+            >
+              <detail :detailData="item"></detail>
+            </el-dialog>
           </div>
         </div>
+        <div class="no-data" v-else-if="!libraryBookList.length">暂无数据</div>
       </div>
-      <div class="no-data" v-else-if="!bookList.length">暂无数据</div>
+      <div class="pagination-wrapper">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageConfig.pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageConfig.pageSize"
+          layout="total, sizes, prev, pager, next"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
     </div>
-    <div class="pagination-wrapper">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pageConfig.pageNum"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageConfig.pageSize"
-        layout="total, sizes, prev, pager, next"
-        :total="total">
-      </el-pagination>
-    </div>
-    <el-dialog 
-      v-if="showBuyVisible"
-      title="订单信息" 
-      :visible.sync="showBuyVisible" 
-      width="30%">
-      <confirm-order @closeOrderDialog="closeConfirm"></confirm-order>
+    <el-dialog title="下架提示" :visible.sync="deleteDialogVisible" width="30%">
+      <span>您确认下架《{{ selectBookName }}》吗?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelDelete">取 消</el-button>
+        <el-button type="primary" @click="confirmDelete">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import searchInput from "@/components/search-input.vue";
-import { mapGetters } from "vuex";
-import ConfirmOrder from './confirm-order.vue';
+import TabList from "./tab-list.vue";
+import Detail from "./detail.vue";
 
 export default {
-  components: { searchInput, ConfirmOrder },
-  name: "Dashboard",
+  components: { searchInput, TabList, Detail },
   data() {
     return {
       searchValue: "",
-      bookList: [
+      tabList: [
         {
+          name: "全部",
+          val: 0,
+        },
+        {
+          name: "文学类",
+          val: 1,
+        },
+        {
+          name: "教育类",
+          val: 2,
+        },
+        {
+          name: "艺术类",
+          val: 3,
+        },
+        {
+          name: "生活类",
+          val: 4,
+        },
+        {
+          name: "科技类",
+          val: 5,
+        },
+      ],
+      libraryBookList: [
+        {
+          bookId: 1,
           name: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
           press: "人民邮电出版社",
-          number: 1,
-          maxValue: 999,
-          price: 80,
+          author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+          ISBN: "9787115545381",
+          type: 1,
         },
       ],
       pageConfig: {
@@ -90,23 +130,82 @@ export default {
         pageSize: 20,
       },
       total: 0,
-      showBuyVisible: false
+      showDetailVisible: false,
+      // 下架图书弹窗
+      deleteDialogVisible: false,
+      selectBookId: "",
     };
   },
-  computed: {
-    // ...mapGetters([
-    //   'name'
-    // ])
-  },
-  watch:{
-    pageConfig:{
-      handler(n){
+  watch: {
+    pageConfig: {
+      handler(n) {
         console.log(n);
-        this.getBookList();
+        this.getLibraryBookList();
       },
       deep: true,
       // immediate: true
-    }
+    },
+  },
+  computed: {
+    selectBookName() {
+      let temp = this.libraryBookList.find((item) => {
+        return item.bookId == this.selectBookId;
+      });
+      if (temp) {
+        return temp.name;
+      }
+    },
+    getColor() {
+      return function (type) {
+        let temp = type.toString();
+        switch (temp) {
+          case "1":
+            return "rgba(238,102,102, 0.8)";
+          case "2":
+            return "rgba(255,220,96, 0.8)";
+          case "3":
+            return "rgba(92,123,217, 0.8)";
+          case "4":
+            return "rgba(255,145,90, 0.8)";
+          case "5":
+            return "rgba(14, 214, 202, 0.8)";
+        }
+      };
+    },
+    getBackground() {
+      return function (type) {
+        let temp = type.toString();
+        switch (temp) {
+          case "1":
+            return "rgba(238,102,102, 0.2)";
+          case "2":
+            return "rgba(255,220,96, 0.2)";
+          case "3":
+            return "rgba(92,123,217, 0.2)";
+          case "4":
+            return "rgba(255,145,90, 0.2)";
+          case "5":
+            return "rgba(14, 214, 202, 0.2)";
+        }
+      };
+    },
+    getText() {
+      return function (type) {
+        let temp = type.toString();
+        switch (temp) {
+          case "1":
+            return "文学类";
+          case "2":
+            return "教育类";
+          case "3":
+            return "艺术类";
+          case "4":
+            return "生活类";
+          case "5":
+            return "科技类";
+        }
+      };
+    },
   },
   methods: {
     search(v) {
@@ -115,34 +214,73 @@ export default {
       // this.handleCurrentChange(1);
       // this.showList = this.contactList.filter(item => item.name.match(searchValue));
     },
-    handleSizeChange(val){
+    handleSizeChange(val) {
       this.pageSize = val;
     },
-    handleCurrentChange(val){
+    handleCurrentChange(val) {
       this.pageNum = val;
     },
-    getBookList(){
+    // 上架图书
+    addBook() {
+      this.$router.push("/dashboard/add-book");
+    },
+    // 下架图书
+    deleteBook(id) {
+      this.selectBookId = id;
+      this.deleteDialogVisible = true;
+    },
+    // 取消下架
+    cancelDelete() {
+      this.selectBookId = "";
+      this.deleteDialogVisible = false;
+    },
+    // 确定下架
+    confirmDelete() {
+      try {
+        // 发送请求
 
+        this.selectBookId = "";
+        this.deleteDialogVisible = false;
+      } catch (e) {
+        this.$message.error(e.message);
+      }
     },
-    showConfirm(){
-      this.showBuyVisible = true
+    // 查看详情
+    showDetail() {
+      this.showDetailVisible = true;
     },
-    closeConfirm(){
-      this.showBuyVisible = false
-    }
+    // 切换列表
+    changTab(tabItem) {
+      console.log(tabItem);
+    },
+    // 查询图书列表
+    getLibraryBookList() {
+      try {
+        
+      } catch (e) {
+        this.$message.error(e.message);
+      }
+    },
   },
 };
 </script>
-
 <style lang="scss" scoped>
-.dashboard-container {
+.search-container {
   margin: 30px;
-  &-wrap{
+  &-type {
+    margin: 20px 0;
+  }
+  &-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &-wrap {
     margin: 20px 10px;
   }
   &-book {
     &-item {
-      width: 420px;
+      width: 280px;
       background: rgba(255, 255, 255, 1);
       box-shadow: 0px 0px 8px 0px rgba(0, 24, 16, 0.08);
       border-radius: 4px;
@@ -150,14 +288,22 @@ export default {
       padding: 6px 24px;
       display: flex;
       justify-content: space-between;
-      img {
-        width: 162px;
-        height: 206px;
-      }
+      // img {
+      //   width: 130px;
+      //   height: 165px;
+      // }
       &-word {
         font-family: "微软雅黑";
         font-weight: 400;
-        margin: 0 20px;
+      }
+      &-type {
+        width: 20px;
+        height: 60px;
+        padding: 2px;
+        background: rgba($color: #000000, $alpha: 1);
+        font-family: "微软雅黑";
+        font-weight: 400;
+        border-radius: 6px;
       }
       &-name {
         width: 190px;
@@ -173,36 +319,22 @@ export default {
         -webkit-line-clamp: 2;
         // vertical-align: middle;
       }
-      &-price{
-        // background: cadetblue;
-        font-size: 16px;
-        margin: 15px 0 5px 0;
-        color: #606266;
-      }
-      &-number{
-        margin: 15px 0 10px 0;
-      }
-      .el-input-number{
-        width: 140px;
-        margin-bottom: 10px;
-      }
-      &-btn{
-        display: flex;
-        justify-content: space-between;
+      &-btn {
+        margin: 15px 0;
       }
     }
   }
-  .no-data{
-      width: 100%;
-      height: 400px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      font-weight: 500;
-      border: 1px solid #eee;
-      color: rgba(162, 162, 162, 1);
-    }
+  .no-data {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 500;
+    border: 1px solid #eee;
+    color: rgba(162, 162, 162, 1);
+  }
   .pagination-wrapper {
     display: flex;
     justify-content: flex-end;
