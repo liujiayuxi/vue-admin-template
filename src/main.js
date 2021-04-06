@@ -1,12 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-25 14:50:24
+ * @LastEditTime: 2021-04-06 14:51:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\main.js
  */
 import Vue from 'vue'
+const Moment = require("moment");
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
@@ -45,6 +46,7 @@ Vue.use(ElementUI)
 Vue.use(htmlToPdf)
 
 Vue.prototype.$echarts = echarts;
+Vue.prototype.$moment = Moment;
 
 Vue.config.productionTip = false
 

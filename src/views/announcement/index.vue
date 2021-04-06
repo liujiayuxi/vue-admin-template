@@ -1,13 +1,36 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-01 17:41:31
- * @LastEditTime: 2021-04-06 10:01:29
+ * @LastEditTime: 2021-04-06 18:06:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\announcement\index.vue
 -->
 <template>
   <div class="announcement">
+    <div class="select-condition">
+      <el-form ref="queryForm" :inline="true" label-width="68px">
+        <el-form-item label="标题关键字" label-width="90px">
+          <el-input v-model="keyWord" style="width: 200px"></el-input>
+        </el-form-item>
+
+        <el-form-item label="发布时间" label-width="110px">
+          <el-date-picker
+            v-model="date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item style="margin-left: 30px">
+          <el-button type="primary" @click="getTableList">查询</el-button>
+          <el-button @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <div class="announcement-table">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column type="index" label="序号" width="100">
@@ -29,6 +52,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pagination-wrapper">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageConfig.pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageConfig.pageSize"
+          layout="total, sizes, prev, pager, next"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
     </div>
     <!-- 修改公告弹窗 -->
     <el-dialog
@@ -90,6 +126,8 @@ export default {
   name: "announcement",
   data() {
     return {
+      keyWord: '',
+      date: '',
       tableData: [
         {
           id: 1,
@@ -132,8 +170,42 @@ export default {
       deleteTitle: "",
       // 查看详情弹窗
       showDetailVisible: false,
-      selectRow: {}
+      selectRow: {},
+      // 分页配置
+      pageConfig: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      // 总页数
+      total: 0
     };
+  },
+  computed: {
+    startTime(){
+      if(!!this.date){
+         return this.$moment(this.date[0]).format('YYYY-MM-DD HH:mm:ss');
+      }else return ''
+    },
+    endTime(){
+      if(!!this.date){
+        return this.$moment(this.date[1]).format('YYYY-MM-DD HH:mm:ss');
+      }else return ''
+      
+    }
+  },
+  watch: {
+      "pageConfig.pageNum": {
+        handler(n) {
+          this.getTableList();
+        },
+        deep: true,
+      },
+      "pageConfig.pageSize": {
+        handler(n) {
+          this.getTableList();
+        },
+        deep: true,
+      },
   },
   methods: {
     // 编辑行
@@ -169,9 +241,58 @@ export default {
       this.$set(this.$data, "selectRow", row);
       this.showDetailVisible = true
     },
+    // 分页页数改变
+    handleSizeChange(val){
+      this.pageConfig.pageSize = val
+    },
+    // 分页当前页改变
+    handleCurrentChange(val){
+      this.pageConfig.pageNum = val
+    },
+    getTableList(){
+      try{
+        let tableObj = {
+          ...this.pageConfig,
+          keyWord: this.keyWord,
+          startTime: this.startTime,
+          endTime: this.endTime
+        }
+        console.log(tableObj);
+      }catch(e){
+        this.$message.error(e.message)
+      }
+    },
+    // 重置查询条件
+    resetQuery(){
+        this.keyWord = ''
+        this.date = ''
+        this.pageConfig.pageNum = 1
+        this.getTableList()
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.announcement{
+  padding: 20px;
+  .select-condition {
+    height: 54px;
+    margin: 0 0 20px 0;
+    background: #ffffff;
+    box-shadow: 0px 0px 6px 0px rgba(0, 24, 16, 0.08);
+    .el-form-item {
+      margin: 7px 0;
+    }
+  }
+  &-table{
+    .pagination-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 30px;
+      margin-right: 20px;
+      padding-top: 17px;
+    }
+  }
+}
 </style>

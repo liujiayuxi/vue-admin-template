@@ -44,6 +44,34 @@ export const constantRoutes = [
   },
 
   {
+    path: '/changePassword',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'changePassword',
+        component: () => import('@/views/changePassword/index'),
+        meta: { title: '修改密码', icon: 'password' }
+      },
+    ]
+  },
+
+  {
+    path: '/singleInfo',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'singleInfo',
+        component: () => import('@/views/singleInfo/index'),
+        meta: { title: '个人信息', icon: 'password' }
+      },
+    ]
+  },
+
+  {
     path: '/',
     component: Layout,
     redirect: '/info',

@@ -16,9 +16,19 @@
               首页
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/liujiayuxi/vue-admin-template">
+          <!-- <a target="_blank" href="https://github.com/liujiayuxi/vue-admin-template">
             <el-dropdown-item>账户余额</el-dropdown-item>
-          </a>
+          </a> -->
+          <router-link to="/singleInfo/index">
+            <el-dropdown-item>
+              个人信息
+            </el-dropdown-item>
+          </router-link>
+          <router-link to="/changePassword/index">
+            <el-dropdown-item>
+              修改密码
+            </el-dropdown-item>
+          </router-link>
           <!-- <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->

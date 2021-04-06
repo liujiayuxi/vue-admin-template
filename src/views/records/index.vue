@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-06 09:56:26
+ * @LastEditTime: 2021-04-06 18:01:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -10,7 +10,7 @@
   <div class="records">
     <div class="select-condition">
       <el-form ref="queryForm" :inline="true" label-width="68px">
-        <el-form-item label="借还类型" label-width="100px" prop="type">
+        <el-form-item label="借还类型" label-width="80px" prop="type">
           <el-select
             v-model="type"
             placeholder="借还类型"
@@ -102,6 +102,7 @@ export default {
   data() {
     return {
       type: "",
+      date: '',
       options: [
         {
           label: "借",
@@ -158,20 +159,18 @@ export default {
     };
   },
   watch: {
-    pageConfig: {
-      "queryParams.pageNum": {
+      "pageConfig.pageNum": {
         handler(n) {
           this.getTableList();
         },
         deep: true,
       },
-      "queryParams.pageSize": {
+      "pageConfig.pageSize": {
         handler(n) {
           this.getTableList();
         },
         deep: true,
       },
-    },
   },
   computed: {
     selectBookName() {
@@ -182,10 +181,22 @@ export default {
         return temp.bookName;
       }
     },
+    startTime(){
+      if(!!this.date){
+         return this.$moment(this.date[0]).format('YYYY-MM-DD HH:mm:ss');
+      }else return ''
+    },
+    endTime(){
+      if(!!this.date){
+        return this.$moment(this.date[1]).format('YYYY-MM-DD HH:mm:ss');
+      }else return ''
+      
+    }
   },
   methods: {
     //   查表
     getTableList() {
+      console.log(this.startTime, this.endTime,1)
         try{
 
         }catch(e){
