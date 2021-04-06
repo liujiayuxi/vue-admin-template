@@ -243,6 +243,19 @@ export const constantRoutes = [
   },
 
   {
+    path: '/list',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'List',
+        component: () => import('@/views/list/index'),
+        meta: { title: '借还列表', icon: 'link' }
+      }
+    ]
+  },
+
+  {
     path: '/rules',
     component: Layout,
     children: [

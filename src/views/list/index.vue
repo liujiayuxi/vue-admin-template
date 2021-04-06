@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-06 20:15:56
+ * @LastEditTime: 2021-04-06 20:16:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -54,14 +54,10 @@
         <el-table-column prop="author" label="作者"> </el-table-column>
         <el-table-column prop="borrowTime" label="借书日期"> </el-table-column>
         <el-table-column prop="lendTime" label="还书日期"> </el-table-column>
-        <el-table-column prop="brokenInfo" label="违章信息"> </el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="agreeBorrow(scope.row)" type="text" size="small" v-if="scope.row.type == '未通过申请'"
-              >同意借出</el-button
-            >
             <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
-              >同意归还</el-button
+              >归还</el-button
             >
           </template>
         </el-table-column>
@@ -79,13 +75,6 @@
         >
         </el-pagination>
       </div>
-      <el-dialog title="提示" :visible.sync="borrowDialogVisible" width="30%">
-        <span>您确认借出《{{ selectBookName }}》吗?</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="cancelBorrow">取 消</el-button>
-          <el-button type="primary" @click="confirmBorrow">确 定</el-button>
-        </span>
-      </el-dialog>
       <el-dialog title="提示" :visible.sync="lendDialogVisible" width="30%">
         <span>您确认归还《{{ selectBookName }}》吗?</span>
         <span slot="footer" class="dialog-footer">
@@ -150,7 +139,7 @@ export default {
       },
   },
   mounted(){
-    this.getTableList()
+      this.getTableList()
   },
   computed: {
     selectBookName() {
@@ -177,7 +166,7 @@ export default {
     //   查表
     getTableList() {
         try{
-          let arr= [{
+            let arr= [{
                 bookId: 1,
                 bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
                 press: "人民邮电出版社",
@@ -211,9 +200,9 @@ export default {
                     case 2:
                         item.type = "已还";break;
                     case 3:
-                        item.type = "未还";break;  
+                        item.type = "未还";break;
                     case 4:
-                        item.type = "未通过申请";break;
+                        item.type = "未通过申请";break;  
                 }
             })
             this.$set(this.$data, 'tableData', arr)
@@ -223,29 +212,6 @@ export default {
     },
     //   重置
     resetQuery() {},
-    // 同意借出
-    agreeBorrow(row) {
-        this.selectId = row.bookId;
-        this.borrowDialogVisible = true;
-    },
-    // 取消借出
-    cancelBorrow(){
-      this.borrowDialogVisible = false;
-      this.selectId = '';
-    },
-    // 确认借出
-    confirmBorrow(){
-      try{
-        // 确认借出请求
-
-        this.borrowDialogVisible = false;
-        this.selectId = '';
-        // 重新查表
-        this.getTableList()
-      }catch(e){
-        this.$message.error(e.message) 
-      }
-    }, 
     // 同意归还
     agreeLend(row) {
       this.selectId = row.bookId;
