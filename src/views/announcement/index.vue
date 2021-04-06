@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-01 17:41:31
- * @LastEditTime: 2021-04-04 17:41:26
+ * @LastEditTime: 2021-04-06 10:01:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\announcement\index.vue
@@ -139,7 +139,7 @@ export default {
     // 编辑行
     editRow(row) {
       for(let key in this.form){
-        this.form[key] = row.key
+        this.form[key] = row[key]
       }
       this.dialogFormVisible = true;
     },

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-04 20:05:31
+ * @LastEditTime: 2021-04-06 09:56:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -78,7 +78,20 @@
         >
         </el-pagination>
       </div>
-      
+      <el-dialog title="提示" :visible.sync="borrowDialogVisible" width="30%">
+        <span>您确认借出《{{ selectBookName }}》吗?</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancelBorrow">取 消</el-button>
+          <el-button type="primary" @click="confirmBorrow">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog title="提示" :visible.sync="lendDialogVisible" width="30%">
+        <span>您确认归还《{{ selectBookName }}》吗?</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancelLend">取 消</el-button>
+          <el-button type="primary" @click="confirmLend">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -97,10 +110,18 @@ export default {
         {
           label: "还",
           value: 2,
+        },{
+          label: "已借",
+          value: 3,
+        },
+        {
+          label: "已还",
+          value: 4,
         },
       ],
       tableData: [
         {
+          bookId: 1,
           bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
           press: "人民邮电出版社",
           author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
@@ -108,6 +129,7 @@ export default {
           lendTime: "2020-07-20",
         },
         {
+          bookId: 2,
           bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
           press: "人民邮电出版社",
           author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
@@ -115,6 +137,7 @@ export default {
           lendTime: "2020-07-20",
         },
         {
+          bookId: 3,
           bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
           press: "人民邮电出版社",
           author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
@@ -126,7 +149,12 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
-      total: 0
+      total: 0,
+      // 同意借出弹窗
+      borrowDialogVisible: false,
+      selectId: '',
+      // 同意归还弹窗
+      lendDialogVisible: false
     };
   },
   watch: {
@@ -145,6 +173,16 @@ export default {
       },
     },
   },
+  computed: {
+    selectBookName() {
+      let temp = this.tableData.find((item) => {
+        return item.bookId == this.selectId;
+      });
+      if (temp) {
+        return temp.bookName;
+      }
+    },
+  },
   methods: {
     //   查表
     getTableList() {
@@ -157,11 +195,57 @@ export default {
     //   重置
     resetQuery() {},
     // 同意借出
-    agreeBorrow() {},
+    agreeBorrow(row) {
+        this.selectId = row.bookId;
+        this.borrowDialogVisible = true;
+    },
+    // 取消借出
+    cancelBorrow(){
+      this.borrowDialogVisible = false;
+      this.selectId = '';
+    },
+    // 确认借出
+    confirmBorrow(){
+      try{
+        // 确认借出请求
+
+        this.borrowDialogVisible = false;
+        this.selectId = '';
+        // 重新查表
+        this.getTableList()
+      }catch(e){
+        this.$message.error(e.message) 
+      }
+    }, 
     // 同意归还
-    agreeLend() {},
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    agreeLend(row) {
+      this.selectId = row.bookId;
+      this.lendDialogVisible = true;
+    },
+    // 取消归还
+    cancelLend(){
+      this.lendDialogVisible = false;
+      this.selectId = '';
+    },
+    // 确认归还
+    confirmLend(){
+      try{
+        // 确认归还请求
+
+        this.lendDialogVisible = false;
+        this.selectId = '';
+        // 重新查表
+        this.getTableList()
+      }catch(e){
+        this.$message.error(e.message) 
+      }
+    }, 
+    handleSizeChange(val) {
+      this.pageConfig.pageSize = val
+    },
+    handleCurrentChange(val) {
+      this.pageConfig.pageNum = val
+    },
   },
 };
 </script>
