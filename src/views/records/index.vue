@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-07 10:07:57
+ * @LastEditTime: 2021-04-07 18:15:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -63,6 +63,9 @@
             <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
               >同意归还</el-button
             >
+            <el-button @click="showHistory(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
+              >借还历史</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -93,6 +96,22 @@
           <el-button type="primary" @click="confirmLend">确 定</el-button>
         </span>
       </el-dialog>
+      <!-- 借阅历史弹窗 -->
+      <el-dialog
+      title="借阅历史"
+      :visible.sync="dialogFormVisible"
+      v-if="dialogFormVisible"
+      width="40%"
+    >
+      <el-table :data="detailData" style="width: 100%" stripe>
+        <el-table-column prop="bookId" label="图书ID"> </el-table-column>
+        <el-table-column prop="bookName" label="书名"> </el-table-column>
+        <el-table-column prop="borrowId" label="借阅证" sortable> </el-table-column>
+        <el-table-column prop="borrowTime" label="借书日期" sortable> </el-table-column>
+        <el-table-column prop="lendTime" label="还书日期" sortable> </el-table-column>
+        <el-table-column prop="handlePerson" label="处理人" sortable> </el-table-column>
+      </el-table>
+    </el-dialog>
     </div>
   </div>
 </template>
@@ -123,6 +142,7 @@ export default {
         }
       ],
       tableData: [],
+      detailData: [],
       pageConfig: {
         pageNum: 1,
         pageSize: 10,
@@ -132,7 +152,9 @@ export default {
       borrowDialogVisible: false,
       selectId: '',
       // 同意归还弹窗
-      lendDialogVisible: false
+      lendDialogVisible: false,
+      // 借还记录弹窗
+      dialogFormVisible: false
     };
   },
   watch: {
@@ -223,6 +245,40 @@ export default {
     },
     //   重置
     resetQuery() {},
+    showHistory(row){
+      // console.log(row)
+      try{
+        // 确认借出请求 row.bookId为图书ID 用bookId去查这本书的历史记录
+        // arr 为后端返回的数组
+        let arr= [{
+                bookId: 1,
+                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+                borrowId: "12345678910",
+                borrowTime: "2020-08-20",
+                handlePerson: '张三'
+            },
+            {
+                bookId: 1,
+                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+                borrowId: "12345678910",
+                borrowTime: "2020-07-20",
+                lendTime: "2020-08-20",
+                handlePerson: '张三'
+            },
+            {
+                bookId: 1,
+                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+                borrowId: "12345678910",
+                borrowTime: "2020-06-20",
+                lendTime: "2020-07-20",
+                handlePerson: '张三'
+            },];
+        this.$set(this.$data, 'detailData', arr)
+        this.dialogFormVisible = true
+      }catch(e){
+        this.$message.error(e.message) 
+      }
+    },
     // 同意借出
     agreeBorrow(row) {
         this.selectId = row.bookId;
