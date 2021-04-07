@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-07 11:21:28
+ * @LastEditTime: 2021-04-07 15:33:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\index.vue
@@ -40,13 +40,13 @@
           <div class="drop-menu-wrapper">
             <img src="@/assets/image/arrow-light.png" />
             <ul class="drop-menu">
-              <li @click="resetPwd(item.userId, item.username, $event)">
+              <li @click="resetPwd(item.borrowId, item.name, $event)">
                 重置密码
               </li>
               <!--                                <li @click="$router.push({path:'/rbac-manage-user/edit-user',query:{...item}})" v-prems="'user:update'">编辑用户-->
               <!--                                </li>-->
               <li @click="editUser(item)">编辑用户</li>
-              <li @click="deleteUser(index,item.username,$event)">删除用户</li>
+              <li @click="deleteUser(item.borrowId,item.name,$event)">删除用户</li>
             </ul>
           </div>
         </div>
@@ -125,6 +125,46 @@ export default {
       setLocalStorage('userItem', item);
       this.userDialogVisible = true
     },
+    async resetPwd(borrowId, name, event) {
+                // console.log(username);
+                event.stopPropagation();
+                await this.$confirm(`确认重置${name}的密码吗?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(async () => {
+                    try {
+                        // let data = await this.$api.resetPassword({borrowId: borrowId});
+                        // this.$message.success(data.message);
+                    } catch (e) {
+                        this.$message.error(e.message);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+
+
+            },
+    async deleteUser(borrowId, name, event) {
+                // console.log(username);
+                event.stopPropagation();
+                await this.$confirm(`确认删除用户${name}吗?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(async () => {
+                    try {
+                        // let data = await this.$api.resetPassword({borrowId: borrowId});
+                        // this.$message.success(data.message);
+                    } catch (e) {
+                        this.$message.error(e.message);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+
+
+            },
     closeDialog(){
       this.userDialogVisible = false;
     },
