@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-06 20:16:52
+ * @LastEditTime: 2021-04-07 10:07:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -46,14 +46,15 @@
     </div>
 
     <div class="records-content">
-      <el-table :data="tableData" style="width: 100%" stripe>
+      <el-table :data="tableData" style="width: 100%" stripe :cell-style='cellStyle'>
         <el-table-column type="index" label="序号"> </el-table-column>
-        <el-table-column prop="type" label="类型"> </el-table-column>
-        <el-table-column prop="bookName" label="书名"> </el-table-column>
-        <el-table-column prop="press" label="出版社"> </el-table-column>
-        <el-table-column prop="author" label="作者"> </el-table-column>
-        <el-table-column prop="borrowTime" label="借书日期"> </el-table-column>
-        <el-table-column prop="lendTime" label="还书日期"> </el-table-column>
+        <el-table-column prop="type" label="类型" sortable> </el-table-column>
+        <el-table-column prop="bookName" label="书名" sortable> </el-table-column>
+        <el-table-column prop="press" label="出版社" sortable> </el-table-column>
+        <el-table-column prop="author" label="作者" sortable> </el-table-column>
+        <el-table-column prop="borrowTime" label="借书日期" sortable> </el-table-column>
+        <el-table-column prop="lendTime" label="还书日期" sortable> </el-table-column>
+        <el-table-column prop="brokenInfo" label="违章信息" sortable> </el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
@@ -241,6 +242,11 @@ export default {
     handleCurrentChange(val) {
       this.pageConfig.pageNum = val
     },
+    cellStyle({columnIndex}){
+      if(columnIndex == 7){
+        return {color: 'rgba(255,0,0,1)'}
+      }
+    }
   },
 };
 </script>

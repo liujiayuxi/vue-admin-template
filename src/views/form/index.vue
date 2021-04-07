@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-23 17:19:33
+ * @LastEditTime: 2021-04-07 11:21:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\index.vue
@@ -30,12 +30,12 @@
             <span class="sex">{{ item.sex }}</span>
           </p>
           <p class="line">
-            <span class="label">用户名</span>
-            <span class="tel">{{ item.username }}</span>
+            <span class="label">角色</span>
+            <span class="tel">{{ item.role }}</span>
           </p>
           <p class="line">
-            <span class="label">手机号</span>
-            <span class="tel">{{ item.mobile }}</span>
+            <span class="label">借阅证编号</span>
+            <span class="tel">{{ item.borrowId }}</span>
           </p>
           <div class="drop-menu-wrapper">
             <img src="@/assets/image/arrow-light.png" />
@@ -86,14 +86,7 @@ export default {
     return {
       searchValue: "",
       dialogTitleValue: "",
-      userList: [
-        {
-          name: "张三",
-          sex: "男",
-          username: "zhangsan",
-          mobile: "12345678910",
-        },
-      ],
+      userList: [],
       pageConfig: {
         pageNum: 1,
         pageSize: 20,
@@ -111,6 +104,9 @@ export default {
       deep: true,
       // immediate: true
     }
+  },
+  mounted(){
+    this.getUserList();
   },
   methods: {
     search(v) {
@@ -139,6 +135,37 @@ export default {
       this.pageNum = val;
     },
     getUserList(){
+      try{
+        let arr = [{
+          name: "张三",
+          sex: 1,
+          role: 1,
+          mobile: "12345678910",
+          borrowId: "12345678910",
+        },{
+          name: "张三",
+          sex: 2,
+          role: 2,
+          mobile: "12345678910",
+          borrowId: "12345678910",
+        },]
+        arr.forEach(item => {
+          if(item.role == 1){
+            item.role = '普通用户'
+          }else if(item.role == 2){
+            item.role = '管理员'
+          }
+
+          if(item.sex == 1){
+            item.sex = '男'
+          }else if(item.sex == 2){
+            item.sex = '女'
+          }
+        })
+        this.$set(this.$data, 'userList', arr)
+      }catch(e){
+        this.$message.error(e.message)
+      }
 
     }
   },

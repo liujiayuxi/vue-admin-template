@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-06 14:35:16
+ * @LastEditTime: 2021-04-07 10:10:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -54,6 +54,9 @@
                 </el-form-item>
                 <el-form-item label="姓名" label-width="100px">
                   <el-input v-model="form.userName" style="width: 70%"></el-input>
+                </el-form-item>
+                <el-form-item label="图书编号" label-width="100px">
+                  <el-input v-model="form.bookId" style="width: 70%"></el-input>
                 </el-form-item>
                 <el-form-item label="书名" label-width="100px">
                   <el-input v-model="form.bookName" style="width: 70%"></el-input>
@@ -155,6 +158,7 @@ export default {
       form: {
         borrowId: '',
         userName: '',
+        bookId: '',
         bookName: ''
       }
     };
