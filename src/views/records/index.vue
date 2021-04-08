@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-07 18:15:54
+ * @LastEditTime: 2021-04-08 15:21:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -45,25 +45,48 @@
       </el-form>
     </div>
 
-    <div class="records-content">
-      <el-table :data="tableData" style="width: 100%" stripe :cell-style='cellStyle'>
+    <div class="records-content" v-loading="loading">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        stripe
+        :cell-style="cellStyle"
+      >
         <el-table-column type="index" label="序号"> </el-table-column>
         <el-table-column prop="type" label="类型" sortable> </el-table-column>
-        <el-table-column prop="bookName" label="书名" sortable> </el-table-column>
-        <el-table-column prop="press" label="出版社" sortable> </el-table-column>
+        <el-table-column prop="borrowId" label="借阅证编号" sortable></el-table-column>
+        <el-table-column prop="bookName" label="书名" sortable>
+        </el-table-column>
+        <el-table-column prop="press" label="出版社" sortable>
+        </el-table-column>
         <el-table-column prop="author" label="作者" sortable> </el-table-column>
-        <el-table-column prop="borrowTime" label="借书日期" sortable> </el-table-column>
-        <el-table-column prop="lendTime" label="还书日期" sortable> </el-table-column>
-        <el-table-column prop="brokenInfo" label="违章信息" sortable> </el-table-column>
+        <el-table-column prop="borrowTime" label="借书日期" sortable>
+        </el-table-column>
+        <el-table-column prop="lendTime" label="还书日期" sortable>
+        </el-table-column>
+        <el-table-column prop="brokenInfo" label="违章信息" sortable>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="agreeBorrow(scope.row)" type="text" size="small" v-if="scope.row.type == '未通过申请'"
-              >同意借出</el-button
+            <el-button
+              @click="agreeBorrow(scope.row)"
+              type="text"
+              size="small"
+              v-if="scope.row.type == '待审核'"
+              >处理借阅</el-button
             >
-            <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
+            <el-button
+              @click="agreeLend(scope.row)"
+              type="text"
+              size="small"
+              v-if="scope.row.type == '未还'"
               >同意归还</el-button
             >
-            <el-button @click="showHistory(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
+            <el-button
+              @click="showHistory(scope.row)"
+              type="text"
+              size="small"
+              v-if="scope.row.type == '未还'"
               >借还历史</el-button
             >
           </template>
@@ -85,8 +108,8 @@
       <el-dialog title="提示" :visible.sync="borrowDialogVisible" width="30%">
         <span>您确认借出《{{ selectBookName }}》吗?</span>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="cancelBorrow">取 消</el-button>
-          <el-button type="primary" @click="confirmBorrow">确 定</el-button>
+          <el-button @click="cancelBorrow">拒绝借出</el-button>
+          <el-button type="primary" @click="confirmBorrow">同意借出</el-button>
         </span>
       </el-dialog>
       <el-dialog title="提示" :visible.sync="lendDialogVisible" width="30%">
@@ -98,20 +121,24 @@
       </el-dialog>
       <!-- 借阅历史弹窗 -->
       <el-dialog
-      title="借阅历史"
-      :visible.sync="dialogFormVisible"
-      v-if="dialogFormVisible"
-      width="40%"
-    >
-      <el-table :data="detailData" style="width: 100%" stripe>
-        <el-table-column prop="bookId" label="图书ID"> </el-table-column>
-        <el-table-column prop="bookName" label="书名"> </el-table-column>
-        <el-table-column prop="borrowId" label="借阅证" sortable> </el-table-column>
-        <el-table-column prop="borrowTime" label="借书日期" sortable> </el-table-column>
-        <el-table-column prop="lendTime" label="还书日期" sortable> </el-table-column>
-        <el-table-column prop="handlePerson" label="处理人" sortable> </el-table-column>
-      </el-table>
-    </el-dialog>
+        title="借阅历史"
+        :visible.sync="dialogFormVisible"
+        v-if="dialogFormVisible"
+        width="40%"
+      >
+        <el-table :data="detailData" style="width: 100%" stripe>
+          <el-table-column prop="bookId" label="图书ID"> </el-table-column>
+          <el-table-column prop="bookName" label="书名"> </el-table-column>
+          <el-table-column prop="borrowId" label="借阅证" sortable>
+          </el-table-column>
+          <el-table-column prop="borrowTime" label="借书日期" sortable>
+          </el-table-column>
+          <el-table-column prop="lendTime" label="还书日期" sortable>
+          </el-table-column>
+          <el-table-column prop="handlePerson" label="处理人" sortable>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -122,7 +149,7 @@ export default {
   data() {
     return {
       type: "",
-      date: '',
+      date: "",
       options: [
         {
           label: "已借",
@@ -137,9 +164,13 @@ export default {
           value: 3,
         },
         {
-          label: "未通过申请",
+          label: "未通过",
           value: 4,
-        }
+        },
+        {
+          label: "待审核",
+          value: 5,
+        },
       ],
       tableData: [],
       detailData: [],
@@ -150,29 +181,39 @@ export default {
       total: 0,
       // 同意借出弹窗
       borrowDialogVisible: false,
-      selectId: '',
+      selectId: "",
       // 同意归还弹窗
       lendDialogVisible: false,
       // 借还记录弹窗
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      timer: "",
+      loading: false,
     };
   },
   watch: {
-      "pageConfig.pageNum": {
-        handler(n) {
-          this.getTableList();
-        },
-        deep: true,
+    "pageConfig.pageNum": {
+      handler(n) {
+        this.getTableList();
       },
-      "pageConfig.pageSize": {
-        handler(n) {
-          this.getTableList();
-        },
-        deep: true,
+      deep: true,
+    },
+    "pageConfig.pageSize": {
+      handler(n) {
+        this.getTableList();
       },
+      deep: true,
+    },
   },
-  mounted(){
-    this.getTableList()
+  mounted() {
+    // 创建时先查表
+    this.getTableList();
+    // 设置定时器
+    this.timer = setInterval(() => {
+      this.getTableList();
+    }, 5000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
   computed: {
     selectBookName() {
@@ -183,159 +224,214 @@ export default {
         return temp.bookName;
       }
     },
-    startTime(){
-      if(!!this.date){
-         return this.$moment(this.date[0]).format('YYYY-MM-DD HH:mm:ss');
-      }else return ''
+    startTime() {
+      if (!!this.date) {
+        return this.$moment(this.date[0]).format("YYYY-MM-DD HH:mm:ss");
+      } else return "";
     },
-    endTime(){
-      if(!!this.date){
-        return this.$moment(this.date[1]).format('YYYY-MM-DD HH:mm:ss');
-      }else return ''
-      
-    }
+    endTime() {
+      if (!!this.date) {
+        return this.$moment(this.date[1]).format("YYYY-MM-DD HH:mm:ss");
+      } else return "";
+    },
   },
   methods: {
     //   查表
-    getTableList() {
-        try{
-          let arr= [{
-                bookId: 1,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                press: "人民邮电出版社",
-                author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-                borrowTime: "2020-06-20",
-                type: 3,
-                brokenInfo: '已逾期3天'
+    async getTableList() {
+      try {
+          this.loading = true;
+          let recordsObj = {
+            type: this.type,
+            startTime: this.startTime,
+            endTime: this.endTime
+          }
+          console.log(recordsObj)
+          let arr = [
+            {
+              bookId: 1,
+              borrowId: "12345678910",
+              bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+              press: "人民邮电出版社",
+              author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+              borrowTime: "2020-06-20",
+              type: 3,
+              brokenInfo: "已逾期3天",
             },
             {
-                bookId: 2,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                press: "人民邮电出版社",
-                author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-                borrowTime: "2020-06-20",
-                lendTime: "2020-07-20",
-                type: 1
+              bookId: 2,
+            borrowId: "12345678910",
+              bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+              press: "人民邮电出版社",
+              author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+              borrowTime: "2020-06-20",
+              lendTime: "2020-07-20",
+              type: 1,
             },
             {
-                bookId: 3,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                press: "人民邮电出版社",
-                author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-                borrowTime: "2020-06-20",
-                lendTime: "2020-07-20",
-                type: 2
-            },];
-            arr.forEach(item => {
-                switch(item.type){
-                    case 1:
-                        item.type = "已借";break;
-                    case 2:
-                        item.type = "已还";break;
-                    case 3:
-                        item.type = "未还";break;  
-                    case 4:
-                        item.type = "未通过申请";break;
-                }
-            })
-            this.$set(this.$data, 'tableData', arr)
-        }catch(e){
-            this.$message.error(e.message)
-        }
+              bookId: 3,
+            borrowId: "12345678910",
+              bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+              press: "人民邮电出版社",
+              author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+              borrowTime: "2020-06-20",
+              lendTime: "2020-07-20",
+              type: 5,
+            },
+          ];
+          arr.forEach((item) => {
+            switch (item.type) {
+              case 1:
+                item.type = "已借";
+                break;
+              case 2:
+                item.type = "已还";
+                break;
+              case 3:
+                item.type = "未还";
+                break;
+              case 4:
+                item.type = "未通过";
+                break;
+              case 5:
+                item.type = "待审核";
+                break;
+            }
+          });
+          this.$set(this.$data, "tableData", arr);
+      } catch (e) {
+        this.$message.error(e.message);
+      } finally {
+        this.loading = false;
+      }
     },
     //   重置
     resetQuery() {},
-    showHistory(row){
+    showHistory(row) {
       // console.log(row)
-      try{
+      try {
         // 确认借出请求 row.bookId为图书ID 用bookId去查这本书的历史记录
         // arr 为后端返回的数组
-        let arr= [{
-                bookId: 1,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                borrowId: "12345678910",
-                borrowTime: "2020-08-20",
-                handlePerson: '张三'
-            },
-            {
-                bookId: 1,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                borrowId: "12345678910",
-                borrowTime: "2020-07-20",
-                lendTime: "2020-08-20",
-                handlePerson: '张三'
-            },
-            {
-                bookId: 1,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                borrowId: "12345678910",
-                borrowTime: "2020-06-20",
-                lendTime: "2020-07-20",
-                handlePerson: '张三'
-            },];
-        this.$set(this.$data, 'detailData', arr)
-        this.dialogFormVisible = true
-      }catch(e){
-        this.$message.error(e.message) 
+        let arr = [
+          {
+            bookId: 1,
+            bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+            borrowId: "12345678910",
+            borrowTime: "2020-08-20",
+            handlePerson: "张三",
+          },
+          {
+            bookId: 1,
+            bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+            borrowId: "12345678910",
+            borrowTime: "2020-07-20",
+            lendTime: "2020-08-20",
+            handlePerson: "张三",
+          },
+          {
+            bookId: 1,
+            bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+            borrowId: "12345678910",
+            borrowTime: "2020-06-20",
+            lendTime: "2020-07-20",
+            handlePerson: "张三",
+          },
+        ];
+        this.$set(this.$data, "detailData", arr);
+        this.dialogFormVisible = true;
+      } catch (e) {
+        this.$message.error(e.message);
       }
     },
-    // 同意借出
+    // 处理借出
     agreeBorrow(row) {
-        this.selectId = row.bookId;
-        this.borrowDialogVisible = true;
+      this.selectId = row.bookId;
+      this.borrowDialogVisible = true;
     },
-    // 取消借出
-    cancelBorrow(){
+    // 拒绝借出
+    cancelBorrow() {
       this.borrowDialogVisible = false;
-      this.selectId = '';
+      this.$prompt("请输入拒绝原因", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /\S+/,
+        inputErrorMessage: "拒绝原因不能为空",
+      })
+        .then(({ value }) => {
+          console.log(this.selectId);
+          try {
+            // 拒绝借出请求 this.selectId为选中图书的编号
+
+            this.selectId = "";
+            // 重新查表
+            this.getTableList();
+          } catch (e) {
+            this.$message.error(e.message);
+          }
+        })
+        .catch(() => {});
     },
+    // 拒绝借出请求
+    // refuseBorrow(){
+    //   try{
+    //     //
+
+    //     this.borrowDialogVisible = false;
+    //     this.selectId = '';
+    //     // 重新查表
+    //     this.getTableList()
+    //   }catch(e){
+    //     this.$message.error(e.message)
+    //   }
+    // },
     // 确认借出
-    confirmBorrow(){
-      try{
+    confirmBorrow() {
+      try {
         // 确认借出请求
 
         this.borrowDialogVisible = false;
-        this.selectId = '';
+        this.selectId = "";
         // 重新查表
-        this.getTableList()
-      }catch(e){
-        this.$message.error(e.message) 
+        this.getTableList();
+      } catch (e) {
+        this.$message.error(e.message);
       }
-    }, 
+    },
     // 同意归还
     agreeLend(row) {
       this.selectId = row.bookId;
       this.lendDialogVisible = true;
     },
     // 取消归还
-    cancelLend(){
+    cancelLend() {
       this.lendDialogVisible = false;
-      this.selectId = '';
+      this.selectId = "";
     },
     // 确认归还
-    confirmLend(){
-      try{
+    confirmLend() {
+      try {
         // 确认归还请求
 
         this.lendDialogVisible = false;
-        this.selectId = '';
+        this.selectId = "";
         // 重新查表
-        this.getTableList()
-      }catch(e){
-        this.$message.error(e.message) 
+        this.getTableList();
+      } catch (e) {
+        this.$message.error(e.message);
       }
-    }, 
+    },
     handleSizeChange(val) {
-      this.pageConfig.pageSize = val
+      this.pageConfig.pageSize = val;
     },
     handleCurrentChange(val) {
-      this.pageConfig.pageNum = val
+      this.pageConfig.pageNum = val;
     },
-    cellStyle({columnIndex}){
-      if(columnIndex == 7){
-        return {color: 'rgba(255,0,0,1)'}
+    cellStyle({ row, columnIndex }) {
+      if (columnIndex == 8) {
+        return { color: "rgba(255, 0, 0, 1)" };
+      } else if (row.type == "待审核") {
+        return { color: "rgba(245, 174, 37, 1)" };
       }
-    }
+    },
   },
 };
 </script>
@@ -355,11 +451,11 @@ export default {
   &-content {
     border: 1px solid rgba(235, 238, 245, 1);
     .pagination-wrapper {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 30px;
-        margin-right: 30px;
-        padding-top: 17px;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 30px;
+      margin-right: 30px;
+      padding-top: 17px;
     }
   }
 }

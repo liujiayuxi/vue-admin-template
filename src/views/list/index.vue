@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-07 10:07:25
+ * @LastEditTime: 2021-04-08 15:19:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -45,7 +45,7 @@
       </el-form>
     </div>
 
-    <div class="records-content">
+    <div class="records-content" v-loading="loading">
       <el-table :data="tableData" style="width: 100%" stripe :cell-style='cellStyle'>
         <el-table-column type="index" label="序号"> </el-table-column>
         <el-table-column prop="type" label="类型" sortable> </el-table-column>
@@ -59,6 +59,8 @@
           <template slot-scope="scope">
             <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
               >归还</el-button
+            ><el-button @click="showReason(scope.row)" type="text" size="small" v-if="scope.row.type == '未通过'"
+              >查看原因</el-button
             >
           </template>
         </el-table-column>
@@ -108,8 +110,12 @@ export default {
           value: 3,
         },
         {
-          label: "未通过申请",
+          label: "未通过",
           value: 4,
+        },
+        {
+          label: "审核中",
+          value: 5,
         }
       ],
       tableData: [],
@@ -122,7 +128,8 @@ export default {
       borrowDialogVisible: false,
       selectId: '',
       // 同意归还弹窗
-      lendDialogVisible: false
+      lendDialogVisible: false,
+      loading: false,
     };
   },
   watch: {
@@ -140,7 +147,15 @@ export default {
       },
   },
   mounted(){
-      this.getTableList()
+      // 创建时先查表
+    this.getTableList();
+    // 设置定时器
+    this.timer = setInterval(() => {
+      this.getTableList();
+    }, 5000);
+  },
+   beforeDestroy() {
+    clearInterval(this.timer);
   },
   computed: {
     selectBookName() {
@@ -164,6 +179,12 @@ export default {
     }
   },
   methods: {
+    showReason(row){
+      this.$alert(row.reason, '详情', {
+          confirmButtonText: '确定',
+          callback: action => {}
+        });
+    },
     //   查表
     getTableList() {
         try{
@@ -174,7 +195,7 @@ export default {
                 author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
                 borrowTime: "2020-06-20",
                 type: 3,
-                brokenInfo: '已逾期3天'
+                brokenInfo: '已逾期3天',
             },
             {
                 bookId: 2,
@@ -183,7 +204,8 @@ export default {
                 author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
                 borrowTime: "2020-06-20",
                 lendTime: "2020-07-20",
-                type: 1
+                type: 4,
+                reason: '逾期次数太多，请联系管理员缴纳相应费用'
             },
             {
                 bookId: 3,
@@ -191,8 +213,7 @@ export default {
                 press: "人民邮电出版社",
                 author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
                 borrowTime: "2020-06-20",
-                lendTime: "2020-07-20",
-                type: 2
+                type: 5
             },];
             arr.forEach(item => {
                 switch(item.type){
@@ -203,7 +224,9 @@ export default {
                     case 3:
                         item.type = "未还";break;
                     case 4:
-                        item.type = "未通过申请";break;  
+                        item.type = "未通过";break;  
+                    case 5:
+                        item.type = "审核中";break; 
                 }
             })
             this.$set(this.$data, 'tableData', arr)
@@ -242,9 +265,11 @@ export default {
     handleCurrentChange(val) {
       this.pageConfig.pageNum = val
     },
-    cellStyle({columnIndex}){
+    cellStyle({row, columnIndex}){
       if(columnIndex == 7){
         return {color: 'rgba(255,0,0,1)'}
+      } else if (row.type == "审核中") {
+        return { color: "rgba(245, 174, 37, 1)" };
       }
     }
   },
