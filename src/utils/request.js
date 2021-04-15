@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-02-01 11:45:33
+ * @LastEditTime: 2021-04-13 21:35:10
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admin-template\src\utils\request.js
+ */
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
@@ -46,7 +54,7 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    if (res.code !== 200) {
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -54,7 +62,8 @@ service.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      // if (res.code === 50008 || res.code === 50012 || res.code === 50014) { "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJQYWluQXNodXJhIiwicm9sZXMiOiJ1c2VyIiwiaWF0IjoxNjE4MzE1NDgyfQ.nF08dBESGfhdl6nlOXdA7paur0qhFAn84r5mr0ZMRAU"
+      if (res.code === 401) {
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
           confirmButtonText: 'Re-Login',

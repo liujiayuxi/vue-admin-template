@@ -1,6 +1,15 @@
+/*
+ * @Author: your name
+ * @Date: 2021-02-01 11:45:33
+ * @LastEditTime: 2021-04-15 15:24:03
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admin-template\src\store\modules\user.js
+ */
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { authorizationValue } from '@/settings'
 
 const getDefaultState = () => {
   return {
@@ -30,12 +39,12 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { identity, password, loginType } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({ identity: identity.trim(), password: password, loginType: loginType}).then(response => {
+        commit('SET_TOKEN', authorizationValue + response.token)
+        commit('SET_NAME', response.username)
+        setToken(response.token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -46,7 +55,8 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo(state.token, state.name).then(response => {
+        console.log(response)
         const { data } = response
 
         if (!data) {

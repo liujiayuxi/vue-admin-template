@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-06 14:51:37
+ * @LastEditTime: 2021-04-13 19:04:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\main.js
@@ -21,6 +21,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import echarts from 'echarts'
+import api from '@/api/'
 import htmlToPdf from '@/utils/htmlToPdf'
 
 import '@/icons' // icon
@@ -47,6 +48,7 @@ Vue.use(htmlToPdf)
 
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$moment = Moment;
+Vue.prototype.$api = api;
 
 Vue.config.productionTip = false
 

@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-02-01 11:45:33
+ * @LastEditTime: 2021-04-13 19:23:39
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admin-template\mock\mock-server.js
+ */
 const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 const chalk = require('chalk')
@@ -35,6 +43,7 @@ function unregisterRoutes() {
 const responseFake = (url, type, respond) => {
   return {
     url: new RegExp(`${process.env.VUE_APP_BASE_API}${url}`),
+    // url: 'http://327g43292g.wicp.vip',
     type: type || 'get',
     response(req, res) {
       console.log('request invoke:' + req.path)
