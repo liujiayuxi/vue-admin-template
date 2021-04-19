@@ -41,7 +41,7 @@ export default {
         value: 3,
         label: '邮箱登录',
         name: 'email',
-        type: 'username'
+        type: 'email'
       },]
     }
   },

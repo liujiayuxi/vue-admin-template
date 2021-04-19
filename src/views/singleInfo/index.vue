@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-06 10:53:29
- * @LastEditTime: 2021-04-07 11:54:41
+ * @LastEditTime: 2021-04-19 13:58:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\singleInfo\index.vue
@@ -132,6 +132,7 @@ export default {
     //   获取当前用户
     getCurrentUser() {
       try {
+        console.log(this.$store.getters.userInfo)
         let currentObj = {
           name: "张三",
           sex: 1,

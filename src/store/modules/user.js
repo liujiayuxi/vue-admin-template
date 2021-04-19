@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-15 15:24:03
+ * @LastEditTime: 2021-04-19 13:53:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\store\modules\user.js
@@ -14,6 +14,8 @@ import { authorizationValue } from '@/settings'
 const getDefaultState = () => {
   return {
     token: getToken(),
+    userInfo: '',
+    // id: '',
     name: '',
     avatar: ''
   }
@@ -28,6 +30,12 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_USER: (state, userObj) => {
+    state.userInfo = userObj
+  },
+  // SET_ID: (state, id) => {
+  //   state.id = id
+  // },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -63,10 +71,12 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
+        // const { name, avatar } = data
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        // commit('SET_NAME', name)SET_ID
+        commit('SET_USER', data.userInfo)
+        // commit('SET_ID', data.userInfo.id)
+        // commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-12 15:32:46
- * @LastEditTime: 2021-04-13 19:19:58
+ * @LastEditTime: 2021-04-19 10:03:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\login\components\username-login.vue
@@ -23,7 +23,7 @@
         <el-input
           ref="identity"
           v-model="loginForm.identity"
-          placeholder="Username"
+          :placeholder="identityPlaceholder"
           name="identity"
           type="text"
           tabindex="1"
@@ -74,9 +74,23 @@ export default {
       required: true
     },
   },
+  computed: {
+    identityPlaceholder() {
+      switch(this.loginType){
+        case 'username': return 'Username';
+        case 'studentNum': return 'StudentID';
+        case 'email': return 'Email';
+      }
+    }
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      // if (!validUsername(value)) {
+      //   callback(new Error("Please enter the correct user name"));
+      // } else {
+      //   callback();
+      // }
+      if (value.length <= 0) {
         callback(new Error("Please enter the correct user name"));
       } else {
         callback();
@@ -91,9 +105,8 @@ export default {
     };
     return {
       loginForm: {
-        identity: "PainAshura",
-        password: "qwas1234",
-        loginType: this.loginType
+        identity: "",
+        password: "",
       },
       loginRules: {
         identity: [
@@ -133,13 +146,18 @@ export default {
           this.loading = true;
           // 判断是什么方式登录
           if(this.loginType == 'studentNum'){
+            // 根据学号检验是否为本校学生
             
+            this.loginForm.loginType = 'studentNum'
+          }else if(this.loginType == 'username' || this.loginType == 'email'){
+            this.loginForm.loginType = 'username'
           }
           this.$store
             .dispatch("user/login", this.loginForm)
             .then((res) => {
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
+              
             })
             .catch(() => {
               this.loading = false;
