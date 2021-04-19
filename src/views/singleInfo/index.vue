@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-06 10:53:29
- * @LastEditTime: 2021-04-19 13:58:31
+ * @LastEditTime: 2021-04-19 23:52:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\singleInfo\index.vue
@@ -35,7 +35,7 @@
 
         <el-form-item label="姓名" style="width: 20%">
           <el-input
-            v-model="form.name"
+            v-model="form.displayName"
             maxlength="10"
             show-word-limit
             :disabled="isEdit"
@@ -44,7 +44,7 @@
 
         <el-form-item label="手机" style="width: 25%">
           <el-input
-            v-model="form.mobile"
+            v-model="form.phone"
             maxlength="11"
             show-word-limit
             :disabled="isEdit"
@@ -62,7 +62,7 @@
 
         <el-form-item label="借阅证编号" style="width: 30%">
           <el-input
-            v-model="form.borrowId"
+            v-model="form.studentNum"
             maxlength="16"
             show-word-limit
             :disabled="notEdit"
@@ -73,7 +73,7 @@
           <el-input
             type="textarea"
             :rows="4"
-            v-model="form.description"
+            v-model="form.remark"
             maxlength="50"
             show-word-limit
             resize="none"
@@ -102,12 +102,12 @@ export default {
     return {
       form: {
         role: "",
-        name: "",
+        displayName: "",
         sex: "",
-        borrowId: "",
-        mobile: "",
+        studentNum: "",
+        phone: "",
         email: "",
-        description: "",
+        remark: "",
       },
       roleList: [
         {
@@ -132,22 +132,23 @@ export default {
     //   获取当前用户
     getCurrentUser() {
       try {
-        console.log(this.$store.getters.userInfo)
-        let currentObj = {
-          name: "张三",
-          sex: 1,
-          role: 1,
-          mobile: "12345678910",
-          borrowId: "12345678910",
-        };
+        let currentObj = this.$store.getters.userInfo
+
 
         if (currentObj.sex == 1) {
           currentObj.sex = "男";
         } else if (currentObj.sex == 2) {
           currentObj.sex = "女";
         }
+
+        if (currentObj.userType == "normal") {
+          currentObj.role = 1;
+        } else if (currentObj.userType == "superAdmin") {
+          currentObj.role = 2;
+        }
+
         // this.$set(this.$data, 'form', currentObj)
-        for (let key in currentObj) {
+        for (let key in this.form) {
           this.form[key] = currentObj[key];
         }
       } catch (e) {
