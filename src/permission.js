@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-15 15:23:45
+ * @LastEditTime: 2021-04-20 22:48:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\permission.js
@@ -29,15 +29,16 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
+    console.log(to)
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
-      // const hasGetUserInfo = store.getters.name
-      // if (hasGetUserInfo) {
-      //   next()
-      // } else {
+      const hasGetUserInfo = store.getters.id
+      if (hasGetUserInfo) {
+        next()
+      } else {
         try {
           // get user info
           await store.dispatch('user/getInfo')
@@ -49,7 +50,7 @@ router.beforeEach(async(to, from, next) => {
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
-      // }
+      }
     }
   } else {
     /* has no token*/

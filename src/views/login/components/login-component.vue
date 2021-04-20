@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-12 15:32:46
- * @LastEditTime: 2021-04-19 10:03:17
+ * @LastEditTime: 2021-04-20 23:19:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\login\components\username-login.vue
@@ -141,20 +141,35 @@ export default {
       });
     },
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           this.loading = true;
           // 判断是什么方式登录
           if(this.loginType == 'studentNum'){
-            // 根据学号检验是否为本校学生
+            try{
+              // 根据学号检验是否为本校学生
+              let data = await this.$api.singleInfoApi.checkStudentNum(this.loginForm.identity)
+              if(data.code !== 200)throw new Error(data.msg)
+              // 不为本校学生 return
+              if(!data.data){
+                  this.$message.error(data.msg)
+                  return
+              }
+            }catch(e){
+              this.$message.error(e.message)
+            }finally{
+              this.loading = false;
+            }
             
             this.loginForm.loginType = 'studentNum'
           }else if(this.loginType == 'username' || this.loginType == 'email'){
             this.loginForm.loginType = 'username'
           }
+
           this.$store
             .dispatch("user/login", this.loginForm)
             .then((res) => {
+              // console.log(res)
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
               

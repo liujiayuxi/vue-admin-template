@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-13 21:35:10
+ * @LastEditTime: 2021-04-20 22:27:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\utils\request.js
@@ -27,7 +27,8 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      // config.headers['X-Token'] = getToken()
+      config.headers['Authorization'] = 'Bearer ' + getToken()
     }
     return config
   },
@@ -91,4 +92,78 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+const request = {
+  post(url, params) {
+    return service.post(url, params, {
+        transformRequest: [(params) => {
+            return tansParams(params)
+        }],
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+  },
+  postFd(url, params) {
+      return service.post(url, params, {
+          transformRequest: [(params) => {
+              return tansParams(params)
+          }],
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      })
+  },
+  postNormal(url, params) {
+      return service.post(url, params);
+  },
+  put(url, params) {
+      return service.put(url, params, {
+          transformRequest: [(params) => {
+              return tansParams(params)
+          }],
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      })
+  },
+  putNormal(url, params) {
+      return service.put(url, params);
+  },
+  get(url, params) {
+    return service.get(url, {params}, {
+        transformRequest: [(params) => {
+            return tansParams(params)
+        }],
+    });
+  },
+  delete(url, params) {
+      let _params
+      if (Object.is(params, undefined)) {
+          _params = ''
+      } else {
+          _params = '?'
+          for (const key in params) {
+              // eslint-disable-next-line no-prototype-builtins
+              if (params.hasOwnProperty(key) && params[key] !== null) {
+                  _params += `${key}=${params[key]}&`
+              }
+          }
+      }
+      return service.delete(`${url}${_params}`)
+  },
+  delNormal(url, params) {
+      return service.delete(url, {data:params});
+  },
+}
+
+function tansParams(params) {
+  let result = ''
+  Object.keys(params).forEach((key) => {
+      if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
+          result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+      }
+  })
+  return result
+}
+
+export default request

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-06 10:53:29
- * @LastEditTime: 2021-04-19 23:52:44
+ * @LastEditTime: 2021-04-20 22:54:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\singleInfo\index.vue
@@ -28,14 +28,14 @@
 
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="form.sex">
-            <el-radio label="男" value="1"></el-radio>
-            <el-radio label="女" value="2"></el-radio>
+            <el-radio label="男" value="1" :disabled="notEdit"></el-radio>
+            <el-radio label="女" value="2" :disabled="notEdit"></el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="姓名" style="width: 20%">
           <el-input
-            v-model="form.displayName"
+            v-model="form.username"
             maxlength="10"
             show-word-limit
             :disabled="isEdit"
@@ -102,12 +102,13 @@ export default {
     return {
       form: {
         role: "",
-        displayName: "",
+        username: "",
         sex: "",
         studentNum: "",
         phone: "",
         email: "",
         remark: "",
+        id: '',
       },
       roleList: [
         {
@@ -130,26 +131,27 @@ export default {
   },
   methods: {
     //   获取当前用户
-    getCurrentUser() {
+    async getCurrentUser() {
       try {
-        let currentObj = this.$store.getters.userInfo
+        let {data, code, msg} = await this.$api.singleInfoApi.getSingleInfo(this.$store.getters.id);
+        if( code !== 200)throw new Error(msg)
 
-
-        if (currentObj.sex == 1) {
-          currentObj.sex = "男";
-        } else if (currentObj.sex == 2) {
-          currentObj.sex = "女";
+        // 性别转换
+        if (data.sex == 1) {
+          data.sex = "男";
+        } else if (data.sex == 2) {
+          data.sex = "女";
         }
 
-        if (currentObj.userType == "normal") {
-          currentObj.role = 1;
-        } else if (currentObj.userType == "superAdmin") {
-          currentObj.role = 2;
+        // 角色转换
+        if (data.userType == "normal") {
+          data.role = 1;
+        } else if (data.userType == "superAdmin") {
+          data.role = 2;
         }
-
-        // this.$set(this.$data, 'form', currentObj)
+        // 给form赋值
         for (let key in this.form) {
-          this.form[key] = currentObj[key];
+          this.form[key] = data[key];
         }
       } catch (e) {
         this.$message.error(e.message);
@@ -160,8 +162,32 @@ export default {
       this.isEdit = false;
     },
     // 提交修改
-    onSubmit() {
+    async onSubmit() {
       try {
+        let sendObj = {}
+        for(let key in this.form){
+          if(key == 'role'){
+            if (this.form.role == 1) {
+              sendObj.userType = "normal";
+            } else if (this.form.role == 2) {
+              sendObj.userType = "superAdmin";
+            }
+          }else if(key == 'sex'){
+            if (this.form.sex == "男") {
+              sendObj.sex = 1;
+            } else if (this.form.sex == "女") {
+              sendObj.sex = 2;
+            }
+          }else{
+            sendObj[key] = this.form[key]
+          }
+        }
+        // console.log(this.$store.state.token, sendObj)
+
+        let { code, msg } = await this.$api.singleInfoApi.editInfo(sendObj)
+        if(code !== 200)throw new Error(msg)
+        this.$message.success(msg);
+        this.isEdit = true;
       } catch (e) {
         this.$message.error(e.message);
       }
