@@ -1,7 +1,7 @@
 <!--
  * @Author: LikSeven
  * @Date: 2021-03-03 11:00:02
- * @LastEditTime: 2021-04-06 18:40:04
+ * @LastEditTime: 2021-04-21 19:42:30
  * @LastEditors: Please set LastEditors
  * @Description: 
  * @FilePath: \iot-device-manage\src\pages\change-password\index.vue
@@ -59,6 +59,8 @@ export default {
         validateNewPass(rule, value, callback){
             if (value === '') {
                 callback(new Error('请输入新密码'));
+            } else if (value.length < 6 || value.length > 12) {
+                callback(new Error('请设置6-12位密码'));
             } else {
                 if (this.ruleForm.checkPass !== '') {
                     this.$refs.ruleForm.validateField('checkPass');
@@ -78,8 +80,13 @@ export default {
         submitFrom() {
             this.$refs.ruleForm.validate( async (valid) => {
                 if(!valid)return false;
-                let {oldPassword,newPassword} = this.ruleForm;
-                await this.$api.systemManageApi.updatePwd({oldPassword,newPassword}).then(async res => {
+                let changeObj = {
+                    oldPassword: this.ruleForm.oldPassword,
+                    newPassword: this.ruleForm.newPassword,
+                    id: this.$store.getters.id
+                }
+                // let {oldPassword,newPassword} = this.ruleForm;
+                await this.$api.singleInfoApi.changePwd(changeObj).then(async res => {
                     let {code,msg} = res;
                     if(+code !== 200) throw new Error(msg);
                     this.$message.success(msg);

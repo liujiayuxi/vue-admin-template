@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 13:37:54
- * @LastEditTime: 2021-04-20 22:40:19
+ * @LastEditTime: 2021-04-21 18:37:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\api\singleInfo.js
@@ -16,6 +16,10 @@ export function getSingleInfo(id, params = {}) {
     return request.get(`/library/auth/info/${id}`, params)
   }
 
-  export function editInfo(params = {}) {
+export function editInfo(params = {}) {
     return request.putNormal('/library/auth/edit', params)
-  }
+}
+
+export function changePwd(params = {}) {
+    return request.putNormal('/library/auth/changePassword', params)
+}
