@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-25 09:35:34
- * @LastEditTime: 2021-04-06 18:26:45
+ * @LastEditTime: 2021-04-22 14:15:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\detail.vue
@@ -15,7 +15,7 @@
       </div>
       <div class="detail-data">
         <p class="name">出版社</p>
-        <p class="value">{{ detailData.press }}</p>
+        <p class="value">{{ detailData.publisher }}</p>
       </div>
       <div class="detail-data">
         <p class="name">作者</p>
@@ -23,7 +23,7 @@
       </div>
       <div class="detail-data">
         <p class="name">ISBN</p>
-        <p class="value">{{ detailData.ISBN }}</p>
+        <p class="value">{{ detailData.description }}</p>
       </div>
       <div class="detail-data">
         <p class="name">类别</p>
@@ -49,18 +49,38 @@ export default {
   },
   computed: {
     detailType(){
-      let temp = this.detailData.type.toString();
+      let temp = this.detailData.sortId.toString();
         switch (temp) {
           case "1":
-            return "文学类";
+            return "未分类";
           case "2":
-            return "教育类";
+            return "护理类";
           case "3":
-            return "艺术类";
+            return "编程类";
           case "4":
-            return "生活类";
+            return "艺术类";
           case "5":
-            return "科技类";
+            return "管理类";
+          case "6":
+            return "法律类";
+          case "7":
+            return "生活类";
+          case "8":
+            return "励志类";
+          case "9":
+            return "故事类";
+          case "10":
+            return "诗歌类";
+          case "11":
+            return "社会学类";
+          case "12":
+            return "文学类";
+          case "13":
+            return "哲学类";
+          case "14":
+            return "科学类";
+          case "15":
+            return "幽默类";
         }
     }
   },

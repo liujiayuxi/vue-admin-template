@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-07 10:10:50
+ * @LastEditTime: 2021-04-22 14:18:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -21,14 +21,14 @@
             v-for="(item, index) in libraryBookList"
             :key="index"
           >
-            <div class="search-container-book-item-type" :style="{'color':getColor(item.type), 'background':getBackground(item.type)}">{{ getText(item.type) }}</div>
+            <div class="search-container-book-item-type" :style="{'color':getColor(item.sortId), 'background':getBackground(item.sortId)}">{{ getText(item.sortId) }}</div>
             <!-- <img src="@/assets/image/bookpic.jpg" /> -->
             <div class="search-container-book-item-word">
               <div class="search-container-book-item-name">
                 {{ item.name }}
               </div>
               <div class="search-container-book-item-btn">
-                <el-button @click="showDetail">查看详情</el-button>
+                <el-button @click="showDetail(item)">查看详情</el-button>
                 <el-button @click="borrow" :disabled="item.isBorrow">{{getBtnText(item.isBorrow)}}</el-button>
               </div>
             </div>
@@ -39,7 +39,7 @@
               :visible.sync="showDetailVisible"
               width="30%"
             >
-              <detail :detailData="item"></detail>
+              <detail :detailData="detailData"></detail>
             </el-dialog>
             <!-- 提交借阅申请 -->
             <el-dialog
@@ -100,51 +100,26 @@ export default {
   data() {
     return {
       searchValue: "",
-      tabList: [
-        {
-          name: "全部",
-          val: 0,
-        },
-        {
-          name: "文学类",
-          val: 1,
-        },
-        {
-          name: "教育类",
-          val: 2,
-        },
-        {
-          name: "艺术类",
-          val: 3,
-        },
-        {
-          name: "生活类",
-          val: 4,
-        },
-        {
-          name: "科技类",
-          val: 5,
-        },
-      ],
+      tabList: [],
       libraryBookList: [
-        {
-          name: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-          press: "人民邮电出版社",
-          author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-          ISBN: "9787115545381",
-          price: "78.2",
-          type: 1,
-          isBorrow: true
-        },
-        {
-          name: "Nodejs权威设计",
-          press: "西安电子出版社",
-          author: "",
-          ISBN: "9787235544762",
-          price: "48.6",
-          type: 2,
-          isBorrow: false
-        },
+        // {
+        //   name: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+        //   press: "人民邮电出版社",
+        //   author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+        //   ISBN: "9787115545381",
+        //   price: "78.2",
+        //   type: 1,
+        //   isBorrow: true
+        // },
+        // {
+        //   name: "Nodejs权威设计",
+        //   press: "西安电子出版社",
+        //   author: "",
+        //   ISBN: "9787235544762",
+        //   price: "48.6",
+        //   type: 2,
+        //   isBorrow: false
+        // },
       ],
       pageConfig: {
         pageNum: 1,
@@ -160,7 +135,9 @@ export default {
         userName: '',
         bookId: '',
         bookName: ''
-      }
+      },
+      sortId: 1,
+      detailData: {}
     };
   },
   watch: {
@@ -175,6 +152,7 @@ export default {
   },
   computed: {
     getBtnText(){
+      // borrowStatus
       return function(isBorrow){
         if(isBorrow){
           return '已借'
@@ -190,6 +168,26 @@ export default {
               case '3': return 'rgba(92,123,217, 0.8)';
               case '4': return 'rgba(255,145,90, 0.8)';
               case '5': return 'rgba(14, 214, 202, 0.8)';
+              case "6":
+                return "rgba(238,102,102, 0.8)";
+              case "7":
+                return "rgba(255,220,96, 0.8)";
+              case "8":
+                return "rgba(92,123,217, 0.8)";
+              case "9":
+                return "rgba(255,145,90, 0.8)";
+              case "10":
+                return "rgba(14, 214, 202, 0.8)";
+              case "11":
+                return "rgba(238,102,102, 0.8)";
+              case "12":
+                return "rgba(255,220,96, 0.8)";
+              case "13":
+                return "rgba(92,123,217, 0.8)";
+              case "14":
+                return "rgba(255,145,90, 0.8)";
+              case "15":
+                return "rgba(14, 214, 202, 0.8)";
 	        }
       }
     },
@@ -202,6 +200,26 @@ export default {
               case '3': return 'rgba(92,123,217, 0.2)';
               case '4': return 'rgba(255,145,90, 0.2)';
               case '5': return 'rgba(14, 214, 202, 0.2)';
+              case "6":
+            return "rgba(238,102,102, 0.2)";
+          case "7":
+            return "rgba(255,220,96, 0.2)";
+          case "8":
+            return "rgba(92,123,217, 0.2)";
+          case "9":
+            return "rgba(255,145,90, 0.2)";
+          case "10":
+            return "rgba(14, 214, 202, 0.2)";
+          case "11":
+            return "rgba(238,102,102, 0.2)";
+          case "12":
+            return "rgba(255,220,96, 0.2)";
+          case "13":
+            return "rgba(92,123,217, 0.2)";
+          case "14":
+            return "rgba(255,145,90, 0.2)";
+          case "15":
+            return "rgba(14, 214, 202, 0.2)";
 	        }
       }
     },
@@ -209,19 +227,52 @@ export default {
       return function(type){
         let temp = type.toString();
           switch(temp){
-              case '1': return '文学类';
-              case '2': return '教育类';
-              case '3': return '艺术类';
-              case '4': return '生活类';
-              case '5': return '科技类';
+              case "1":
+            return "未分类";
+          case "2":
+            return "护理";
+          case "3":
+            return "编程";
+          case "4":
+            return "艺术";
+          case "5":
+            return "管理";
+          case "6":
+            return "法律";
+          case "7":
+            return "生活";
+          case "8":
+            return "励志";
+          case "9":
+            return "故事";
+          case "10":
+            return "诗歌";
+          case "11":
+            return "社会学";
+          case "12":
+            return "文学";
+          case "13":
+            return "哲学";
+          case "14":
+            return "科学";
+          case "15":
+            return "幽默";
 	        }
       }
     }
   },
+  async mounted () {
+    await this.getBookType();
+    await this.getLibraryBookList();
+  },
   methods: {
     search(v) {
       this.searchValue = v;
-      console.log(this.searchValue);
+      if(this.pageConfig.pageNum == 1){
+        this.getLibraryBookList();
+      }else{
+        this.pageConfig.pageNum = 1
+      }
       // this.handleCurrentChange(1);
       // this.showList = this.contactList.filter(item => item.name.match(searchValue));
     },
@@ -230,6 +281,22 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNum = val;
+    },
+    async getBookType(){
+      try{
+        let { code, msg, total, rows } = await this.$api.bookManageApi.searchBookType();
+        if(code !== 200) throw new Error(msg)
+        let arr = []
+        rows.forEach(item => {
+          arr.push({
+            val: item.id,
+            name: item.name
+          })
+        });
+        this.$set(this.$data, 'tabList', arr)
+      }catch(e){
+        this.$message.error(e.message)
+      }
     },
     // 借阅图书
     borrow(){
@@ -258,14 +325,31 @@ export default {
       }
     },
     // 查看详情
-    showDetail() {
+    showDetail(item) {
+      this.detailData = item;
       this.showDetailVisible = true;
     },
     // 切换列表
     changTab(tabItem){
-      console.log(tabItem)
+      // console.log(tabItem)
+      this.sortId = tabItem.val;
+      this.getLibraryBookList()
     },
-    getLibraryBookList() {},
+    async getLibraryBookList() {
+      try{
+        let sendBookObj = {
+          ...this.pageConfig,
+          sortId: this.sortId,
+          name: this.searchValue
+        }
+        let { code, msg, total, rows } = await this.$api.bookManageApi.searchBookList(sendBookObj);
+        if(code !== 200) throw new Error(msg)
+        this.total = total;
+        this.$set(this.$data, 'libraryBookList', rows)
+      }catch(e){
+        this.$message.error(e.message)
+      }
+    },
   },
 };
 </script>
@@ -302,7 +386,7 @@ export default {
       }
       &-type {
         width: 20px;
-        height: 60px;
+        height: fit-content;
         padding: 2px;
         margin-top: 10px;
         background: rgba($color: #000000, $alpha: 1.0);
@@ -339,7 +423,6 @@ export default {
     align-items: center;
     font-size: 20px;
     font-weight: 500;
-    border: 1px solid #eee;
     color: rgba(162, 162, 162, 1);
   }
   .pagination-wrapper {
