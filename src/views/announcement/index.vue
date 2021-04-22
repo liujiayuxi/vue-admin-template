@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-01 17:41:31
- * @LastEditTime: 2021-04-07 16:25:11
+ * @LastEditTime: 2021-04-22 23:26:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\announcement\index.vue
@@ -39,18 +39,18 @@
         <el-table-column type="index" label="序号" width="100">
         </el-table-column>
         <el-table-column prop="title" label="标题"> </el-table-column>
-        <el-table-column prop="content" label="内容"> </el-table-column>
-        <el-table-column prop="time" label="发布时间"></el-table-column>
+        <el-table-column prop="detail" label="内容"> </el-table-column>
+        <el-table-column prop="publishDate" label="发布时间"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="editRow(scope.row)" type="text" size="small"
+            <!-- <el-button @click="editRow(scope.row)" type="text" size="small"
               >修改</el-button
-            >
+            > -->
             <el-button @click="deleteRow(scope.row)" type="text" size="small"
-              >删除</el-button
+              ><i class="el-icon-delete"></i>删除</el-button
             >
             <el-button @click="showDetail(scope.row)" type="text" size="small"
-              >查看详情</el-button
+              ><i class="el-icon-s-operation"></i>查看详情</el-button
             >
           </template>
         </el-table-column>
@@ -83,7 +83,7 @@
         <el-form-item label="内容" label-width="80px">
           <el-input
             type="textarea"
-            v-model="form.content"
+            v-model="form.detail"
             resize="none"
             rows="3"
             style="width: 70%"
@@ -133,7 +133,7 @@
         <el-form-item label="内容" label-width="80px">
           <el-input
             type="textarea"
-            v-model="addForm.content"
+            v-model="addForm.detail"
             resize="none"
             rows="3"
             style="width: 70%"
@@ -158,46 +158,46 @@ export default {
       keyWord: '',
       date: '',
       tableData: [
-        {
-          id: 1,
-          title: "增加新书",
-          content:
-            "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
-          time: "2020-06-20",
-        },
-        {
-          id: 2,
-          title: "增加新书",
-          content:
-            "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
-          time: "2020-06-20",
-        },
-        {
-          id: 3,
-          title: "增加新书",
-          content:
-            "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
-          time: "2020-06-20",
-        },
-        {
-          id: 4,
-          title: "增加新书",
-          content:
-            "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
-          time: "2020-06-20",
-        },
+        // {
+        //   id: 1,
+        //   title: "增加新书",
+        //   content:
+        //     "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
+        //   time: "2020-06-20",
+        // },
+        // {
+        //   id: 2,
+        //   title: "增加新书",
+        //   content:
+        //     "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
+        //   time: "2020-06-20",
+        // },
+        // {
+        //   id: 3,
+        //   title: "增加新书",
+        //   content:
+        //     "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
+        //   time: "2020-06-20",
+        // },
+        // {
+        //   id: 4,
+        //   title: "增加新书",
+        //   content:
+        //     "书名：数据库系统概论学习指导 作者：王珊 出版社：高等教育出版社",
+        //   time: "2020-06-20",
+        // },
       ],
       // 修改公告弹窗
       dialogFormVisible: false,
       // 修改公告弹窗表单
       form: {
         title: "",
-        content: "",
+        detail: "",
       },
       // 新增公告弹窗表单
       addForm: {
         title: "",
-        content: "",
+        detail: "",
       },
       // 删除公告弹窗
       deleteDialogVisible: false,
@@ -213,7 +213,8 @@ export default {
       // 总页数
       total: 0,
       // 添加公告弹窗
-      addAnnouncementVisible: false
+      addAnnouncementVisible: false,
+      deleteId: ''
     };
   },
   computed: {
@@ -243,6 +244,9 @@ export default {
         deep: true,
       },
   },
+  mounted(){
+    this.getTableList()
+  },
   methods: {
     // 编辑行
     editRow(row) {
@@ -254,20 +258,26 @@ export default {
     // 删除行
     deleteRow(row) {
       this.deleteTitle = row.title;
+      this.deleteId = row.id;
       this.deleteDialogVisible = true;
     },
     // 取消删除
     cancelDelete() {
       this.deleteDialogVisible = false;
       this.deleteTitle = "";
+      this.deleteId = ''
     },
     // 确认删除
-    confirmDelete() {
+    async confirmDelete() {
       try {
         // 发送请求
-
+        let {code, msg} = await this.$api.announcementApi.deleteAnnouncement(this.deleteId);
+        if( code !== 200 )throw new Error(msg)
+        this.$message.success(msg)
         this.deleteDialogVisible = false;
         this.deleteTitle = "";
+        this.deleteId = ''
+        this.getTableList()
       } catch (e) {
         this.$message.error(e.message);
       }
@@ -285,15 +295,18 @@ export default {
     handleCurrentChange(val){
       this.pageConfig.pageNum = val
     },
-    getTableList(){
+    async getTableList(){
       try{
         let tableObj = {
           ...this.pageConfig,
-          keyWord: this.keyWord,
-          startTime: this.startTime,
-          endTime: this.endTime
+          title: this.keyWord,
+          publishDateStart: this.startTime,
+          publishDateEnd: this.endTime
         }
-        console.log(tableObj);
+        let { total, code, msg, rows } = await this.$api.announcementApi.searchAnnouncementList(tableObj)
+        if( code !== 200 )throw new Error(msg)
+        this.total = total;
+        this.$set(this.$data, 'tableData', rows)
       }catch(e){
         this.$message.error(e.message)
       }
@@ -302,8 +315,13 @@ export default {
     resetQuery(){
         this.keyWord = ''
         this.date = ''
-        this.pageConfig.pageNum = 1
-        this.getTableList()
+        if(this.pageConfig.pageNum == 1){
+          this.getTableList()
+        }else{
+          this.pageConfig.pageNum = 1
+        }
+        
+        
     },
     // 打开新增公告弹窗
     addAnnouncement(){
@@ -317,11 +335,14 @@ export default {
       }
     },
     // 提交新增公告
-    onSubmit(){
+    async onSubmit(){
       try{
         // 发送添加公告请求
-
+        let { code, msg } = await this.$api.announcementApi.addAnnouncement(this.addForm);
+        if(code !== 200) throw new Error(msg);
+        this.$message.success(msg)
         this.cancel()
+        this.getTableList()
       }catch(e){
         this.$message.error(e.message)
       }

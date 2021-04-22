@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-22 14:18:29
+ * @LastEditTime: 2021-04-22 21:28:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -29,7 +29,7 @@
               </div>
               <div class="search-container-book-item-btn">
                 <el-button @click="showDetail(item)">查看详情</el-button>
-                <el-button @click="borrow" :disabled="item.isBorrow">{{getBtnText(item.isBorrow)}}</el-button>
+                <el-button @click="borrow(item)" :disabled="item.borrowStatus == '在库' ? false : true ">{{getBtnText(item.borrowStatus)}}</el-button>
               </div>
             </div>
             <!-- 查看详情 -->
@@ -49,24 +49,23 @@
               width="30%"
             >
               <el-form :model="form">
-                <el-form-item label="借阅证编号" label-width="100px">
-                  <el-input v-model="form.borrowId" style="width: 70%"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名" label-width="100px">
-                  <el-input v-model="form.userName" style="width: 70%"></el-input>
+                <el-form-item label="书名" label-width="100px">
+                  <el-input v-model="form.bookName" style="width: 70%" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="图书编号" label-width="100px">
-                  <el-input v-model="form.bookId" style="width: 70%"></el-input>
+                  <el-input v-model="form.bookId" style="width: 70%" :disabled="true"></el-input>
                 </el-form-item>
-                <el-form-item label="书名" label-width="100px">
-                  <el-input v-model="form.bookName" style="width: 70%"></el-input>
+                <el-form-item label="姓名" label-width="100px">
+                  <el-input v-model="form.userName" style="width: 70%" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="借阅证编号" label-width="100px">
+                  <el-input v-model="form.borrowId" style="width: 70%" :disabled="true"></el-input>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="cancelBorrow">取 消</el-button>
                 <el-button type="primary" @click="confirmBorrow"
-                  >确 定</el-button
-                >
+                  >确 定</el-button>
               </div>
             </el-dialog>
 
@@ -137,7 +136,8 @@ export default {
         bookName: ''
       },
       sortId: 1,
-      detailData: {}
+      detailData: {},
+      userId: ''
     };
   },
   watch: {
@@ -153,10 +153,10 @@ export default {
   computed: {
     getBtnText(){
       // borrowStatus
-      return function(isBorrow){
-        if(isBorrow){
-          return '已借'
-        }else return '借阅'
+      return function(borrowStatus){
+        if(borrowStatus == '在库'){
+          return '借阅'
+        }else return '已借'
       }
     },
     getColor() {
@@ -299,7 +299,19 @@ export default {
       }
     },
     // 借阅图书
-    borrow(){
+    async borrow(item){
+      try{
+        let { code, msg, data } = await this.$api.userApi.getInfo(this.$store.getters.name);
+        if( code !== 200 ) throw new Error(msg)
+        this.form.borrowId = data.userInfo.studentNum
+        this.form.userName = data.userInfo.username
+        this.userId = data.userInfo.id
+      }catch(e){
+        this.$message.error(e.message);
+      }
+      this.form.bookId = item.id
+      this.form.bookName = item.name
+      console.log(this.$store.getters)
       this.borrowDetailVisible = true;
     },
     // 取消借阅申请
@@ -311,15 +323,24 @@ export default {
       this.borrowDetailVisible = false
     },
     // 确认借阅申请
-    confirmBorrow(){
+    async confirmBorrow(){
       try{
+        console.log(this.$store.getters)
         // 发送借阅申请请求
-        
+        let borrowObj = {
+          bookId: this.form.bookId,
+          studentNum: this.form.borrowId,
+          userId: this.userId
+        }
+        let { code, msg } = await this.$api.bookManageApi.confirmBorrow(borrowObj);
+        if( code !== 200 ) throw new Error(msg)
+        this.$message.success(msg)
+        // 关闭弹窗
+        this.borrowDetailVisible = false
         // 清空表单数据
         for(let key in this.form){
           this.form[key] = ''
         }
-        this.borrowDetailVisible = false
       }catch(e){
         this.$message.error(e.message)
       }

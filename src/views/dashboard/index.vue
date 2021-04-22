@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-22 13:56:38
+ * @LastEditTime: 2021-04-22 22:47:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -40,7 +40,7 @@
               </div>
               <div class="search-container-book-item-btn">
                 <el-button @click="showDetail(item)">查看详情</el-button>
-                <el-button @click="deleteBook(item.id)">下架</el-button>
+                <el-button @click="deleteBook(item.id)" :disabled="true">下架</el-button>
               </div>
             </div>
 

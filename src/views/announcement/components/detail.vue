@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-25 09:35:34
- * @LastEditTime: 2021-04-04 17:48:00
+ * @LastEditTime: 2021-04-22 23:01:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\detail.vue
@@ -15,11 +15,11 @@
       </div>
       <div class="detail-data">
         <p class="name">发布时间</p>
-        <p class="value">{{ detailData.time }}</p>
+        <p class="value">{{ detailData.publishDate }}</p>
       </div>
       <div class="detail-data">
         <p class="name">内容</p>
-        <p class="value">{{ detailData.content }}</p>
+        <p class="value">{{ detailData.detail }}</p>
       </div>
     </div>
   </div>

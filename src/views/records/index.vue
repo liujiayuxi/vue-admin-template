@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-08 15:21:34
+ * @LastEditTime: 2021-04-22 22:32:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -151,26 +151,26 @@ export default {
       type: "",
       date: "",
       options: [
-        {
-          label: "已借",
-          value: 1,
-        },
-        {
-          label: "已还",
-          value: 2,
-        },
-        {
-          label: "未还",
-          value: 3,
-        },
-        {
-          label: "未通过",
-          value: 4,
-        },
-        {
-          label: "待审核",
-          value: 5,
-        },
+        // {
+        //   label: "借出",
+        //   value: 1,
+        // },
+        // {
+        //   label: "已还",
+        //   value: 2,
+        // },
+        // {
+        //   label: "未还",
+        //   value: 3,
+        // },
+        // {
+        //   label: "未通过",
+        //   value: 4,
+        // },
+        // {
+        //   label: "待审核",
+        //   value: 5,
+        // },
       ],
       tableData: [],
       detailData: [],
@@ -204,9 +204,10 @@ export default {
       deep: true,
     },
   },
-  mounted() {
+  async mounted() {
+    await this.getSearchType()
     // 创建时先查表
-    this.getTableList();
+    await this.getTableList();
     // 设置定时器
     this.timer = setInterval(() => {
       this.getTableList();
@@ -226,26 +227,51 @@ export default {
     },
     startTime() {
       if (!!this.date) {
-        return this.$moment(this.date[0]).format("YYYY-MM-DD HH:mm:ss");
+        return this.$moment(this.date[0]).format("YYYY-MM-DD");
       } else return "";
     },
     endTime() {
       if (!!this.date) {
-        return this.$moment(this.date[1]).format("YYYY-MM-DD HH:mm:ss");
+        return this.$moment(this.date[1]).format("YYYY-MM-DD");
       } else return "";
     },
   },
   methods: {
+    // 查借还类型
+    async getSearchType(){
+      try{
+        let { data, code, msg } = await this.$api.borrowRecordApi.searchRecordsType();
+        if(code !== 200 )throw new Error(msg)
+        let arr = []
+        data.forEach((item,index) => {
+            arr.push({
+              label: item,
+              value: index+1
+            })
+        })
+        this.$set(this.$data, 'options', arr)
+      }catch(e){
+        this.$message.error(e.message)
+      }
+    },
     //   查表
     async getTableList() {
       try {
           this.loading = true;
-          let recordsObj = {
-            type: this.type,
-            startTime: this.startTime,
-            endTime: this.endTime
+          let borrowStatus = ''
+          let temp = this.options.find(item => {
+            return item.value == this.type
+          })
+          if(temp){
+              borrowStatus = temp.label
           }
-          console.log(recordsObj)
+          let recordsObj = {
+            borrowStatus,
+            borrowDateStart: this.startTime,
+            borrowDateEnd: this.endTime
+          }
+          let data = await this.$api.borrowRecordApi.searchBookRecords(recordsObj)
+          console.log(data);
           let arr = [
             {
               bookId: 1,

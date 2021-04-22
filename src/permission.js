@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-20 22:48:03
+ * @LastEditTime: 2021-04-22 21:46:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\permission.js
@@ -41,7 +41,7 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          await store.dispatch('user/getInfo')
+          // await store.dispatch('user/getInfo')
           next()
         } catch (error) {
           // remove token and go to login page to re-login

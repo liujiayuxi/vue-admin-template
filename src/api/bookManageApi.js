@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-21 18:48:33
- * @LastEditTime: 2021-04-22 13:44:07
+ * @LastEditTime: 2021-04-22 20:46:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\api\bookManageApi.js
@@ -31,4 +31,9 @@ export function deleteBook(id, params = {}) {
 // 上架（添加）图书
 export function addBook(params = {}) {
     return request.postNormal('/library/book/add', params)
+}
+
+// 发起借书申请
+export function confirmBorrow(params = {}) {
+    return request.putNormal('/library/borrowBook/launch', params)
 }
