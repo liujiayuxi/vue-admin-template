@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-02-24 17:07:13
+ * @LastEditTime: 2021-04-21 20:51:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\dashboard\index.vue
@@ -200,7 +200,6 @@ export default {
       align-items: center;
       font-size: 20px;
       font-weight: 500;
-      border: 1px solid #eee;
       color: rgba(162, 162, 162, 1);
     }
   .pagination-wrapper {

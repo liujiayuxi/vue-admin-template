@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-12 15:32:46
- * @LastEditTime: 2021-04-20 23:19:14
+ * @LastEditTime: 2021-04-21 19:56:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\login\components\username-login.vue
@@ -171,12 +171,12 @@ export default {
             .then((res) => {
               // console.log(res)
               this.$router.push({ path: this.redirect || "/" });
-              this.loading = false;
               
             })
-            .catch(() => {
-              this.loading = false;
-            });
+            .catch(e => {
+              this.$message.error(e.message)
+            })
+            this.loading = false;
         } else {
           console.log("error submit!!");
           return false;

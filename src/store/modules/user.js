@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-20 22:18:42
+ * @LastEditTime: 2021-04-21 19:50:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\store\modules\user.js
@@ -50,6 +50,7 @@ const actions = {
     const { identity, password, loginType } = userInfo
     return new Promise((resolve, reject) => {
       login({ identity: identity.trim(), password: password, loginType: loginType}).then(response => {
+        if(response.code !== 200) throw new Error(response.msg)
         commit('SET_TOKEN', authorizationValue + response.token)
         commit('SET_NAME', response.username)
         setToken(response.token)

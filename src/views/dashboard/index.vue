@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-04 10:00:02
+ * @LastEditTime: 2021-04-22 13:56:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -27,11 +27,11 @@
             <div
               class="search-container-book-item-type"
               :style="{
-                color: getColor(item.type),
-                background: getBackground(item.type),
+                color: getColor(item.sortId),
+                background: getBackground(item.sortId),
               }"
             >
-              {{ getText(item.type) }}
+              {{ getText(item.sortId) }}
             </div>
             <!-- <img src="@/assets/image/bookpic.jpg" /> -->
             <div class="search-container-book-item-word">
@@ -39,8 +39,8 @@
                 {{ item.name }}
               </div>
               <div class="search-container-book-item-btn">
-                <el-button @click="showDetail">查看详情</el-button>
-                <el-button @click="deleteBook(item.bookId)">下架</el-button>
+                <el-button @click="showDetail(item)">查看详情</el-button>
+                <el-button @click="deleteBook(item.id)">下架</el-button>
               </div>
             </div>
 
@@ -50,7 +50,7 @@
               :visible.sync="showDetailVisible"
               width="30%"
             >
-              <detail :detailData="item"></detail>
+              <detail :detailData="detailData"></detail>
             </el-dialog>
           </div>
         </div>
@@ -89,58 +89,26 @@ export default {
   data() {
     return {
       searchValue: "",
-      tabList: [
-        {
-          name: "全部",
-          val: 0,
-        },
-        {
-          name: "文学类",
-          val: 1,
-        },
-        {
-          name: "教育类",
-          val: 2,
-        },
-        {
-          name: "艺术类",
-          val: 3,
-        },
-        {
-          name: "生活类",
-          val: 4,
-        },
-        {
-          name: "科技类",
-          val: 5,
-        },
-      ],
-      libraryBookList: [
-        {
-          bookId: 1,
-          name: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-          press: "人民邮电出版社",
-          author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-          ISBN: "9787115545381",
-          type: 1,
-        },
-      ],
+      tabList: [],
+      libraryBookList: [],
       pageConfig: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
       },
       total: 0,
       showDetailVisible: false,
       // 下架图书弹窗
       deleteDialogVisible: false,
       selectBookId: "",
+      sortId: 1,
+      detailData: {}
     };
   },
   watch: {
     pageConfig: {
       handler(n) {
         console.log(n);
-        this.getLibraryBookList();
+        this.getBookList();
       },
       deep: true,
       // immediate: true
@@ -149,7 +117,7 @@ export default {
   computed: {
     selectBookName() {
       let temp = this.libraryBookList.find((item) => {
-        return item.bookId == this.selectBookId;
+        return item.id == this.selectBookId;
       });
       if (temp) {
         return temp.name;
@@ -169,6 +137,26 @@ export default {
             return "rgba(255,145,90, 0.8)";
           case "5":
             return "rgba(14, 214, 202, 0.8)";
+          case "6":
+            return "rgba(238,102,102, 0.8)";
+          case "7":
+            return "rgba(255,220,96, 0.8)";
+          case "8":
+            return "rgba(92,123,217, 0.8)";
+          case "9":
+            return "rgba(255,145,90, 0.8)";
+          case "10":
+            return "rgba(14, 214, 202, 0.8)";
+          case "11":
+            return "rgba(238,102,102, 0.8)";
+          case "12":
+            return "rgba(255,220,96, 0.8)";
+          case "13":
+            return "rgba(92,123,217, 0.8)";
+          case "14":
+            return "rgba(255,145,90, 0.8)";
+          case "15":
+            return "rgba(14, 214, 202, 0.8)";
         }
       };
     },
@@ -186,6 +174,26 @@ export default {
             return "rgba(255,145,90, 0.2)";
           case "5":
             return "rgba(14, 214, 202, 0.2)";
+          case "6":
+            return "rgba(238,102,102, 0.2)";
+          case "7":
+            return "rgba(255,220,96, 0.2)";
+          case "8":
+            return "rgba(92,123,217, 0.2)";
+          case "9":
+            return "rgba(255,145,90, 0.2)";
+          case "10":
+            return "rgba(14, 214, 202, 0.2)";
+          case "11":
+            return "rgba(238,102,102, 0.2)";
+          case "12":
+            return "rgba(255,220,96, 0.2)";
+          case "13":
+            return "rgba(92,123,217, 0.2)";
+          case "14":
+            return "rgba(255,145,90, 0.2)";
+          case "15":
+            return "rgba(14, 214, 202, 0.2)";
         }
       };
     },
@@ -194,25 +202,85 @@ export default {
         let temp = type.toString();
         switch (temp) {
           case "1":
-            return "文学类";
+            return "未分类";
           case "2":
-            return "教育类";
+            return "护理";
           case "3":
-            return "艺术类";
+            return "编程";
           case "4":
-            return "生活类";
+            return "艺术";
           case "5":
-            return "科技类";
+            return "管理";
+          case "6":
+            return "法律";
+          case "7":
+            return "生活";
+          case "8":
+            return "励志";
+          case "9":
+            return "故事";
+          case "10":
+            return "诗歌";
+          case "11":
+            return "社会学";
+          case "12":
+            return "文学";
+          case "13":
+            return "哲学";
+          case "14":
+            return "科学";
+          case "15":
+            return "幽默";
         }
       };
     },
   },
+  async mounted(){
+    await this.getBookType()
+    await this.getBookList()
+  },
   methods: {
     search(v) {
       this.searchValue = v;
-      console.log(this.searchValue);
+      // this.getBookList();
+      if(this.pageConfig.pageNum == 1){
+        this.getBookList();
+      }else{
+        this.pageConfig.pageNum = 1
+      }
       // this.handleCurrentChange(1);
       // this.showList = this.contactList.filter(item => item.name.match(searchValue));
+    },
+    async getBookType(){
+      try{
+        let { code, msg, total, rows } = await this.$api.bookManageApi.searchBookType();
+        if(code !== 200) throw new Error(msg)
+        let arr = []
+        rows.forEach(item => {
+          arr.push({
+            val: item.id,
+            name: item.name
+          })
+        });
+        this.$set(this.$data, 'tabList', arr)
+      }catch(e){
+        this.$message.error(e.message)
+      }
+    },
+    async getBookList(){
+      try{
+        let sendBookObj = {
+          ...this.pageConfig,
+          sortId: this.sortId,
+          name: this.searchValue
+        }
+        let { code, msg, total, rows } = await this.$api.bookManageApi.searchBookList(sendBookObj);
+        if(code !== 200) throw new Error(msg)
+        this.total = total;
+        this.$set(this.$data, 'libraryBookList', rows)
+      }catch(e){
+        this.$message.error(e.message)
+      }
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -231,35 +299,32 @@ export default {
     },
     // 取消下架
     cancelDelete() {
-      this.selectBookId = "";
       this.deleteDialogVisible = false;
+      this.selectBookId = "";
     },
     // 确定下架
-    confirmDelete() {
+    async confirmDelete() {
       try {
         // 发送请求
-
+        let { code, msg } = await this.$api.bookManageApi.deleteBook(this.selectBookId);
+        if(code !== 200) throw new Error(msg)
+        this.$message.success(msg)
         this.selectBookId = "";
         this.deleteDialogVisible = false;
+        this.getBookList()
       } catch (e) {
         this.$message.error(e.message);
       }
     },
     // 查看详情
-    showDetail() {
+    showDetail(item) {
+      this.detailData = item;
       this.showDetailVisible = true;
     },
     // 切换列表
     changTab(tabItem) {
-      console.log(tabItem);
-    },
-    // 查询图书列表
-    getLibraryBookList() {
-      try {
-        
-      } catch (e) {
-        this.$message.error(e.message);
-      }
+      this.sortId = tabItem.val;
+      this.getBookList()
     },
   },
 };
@@ -279,6 +344,8 @@ export default {
     margin: 20px 10px;
   }
   &-book {
+    display: flex;
+    flex-wrap: wrap;
     &-item {
       width: 280px;
       background: rgba(255, 255, 255, 1);
@@ -298,7 +365,7 @@ export default {
       }
       &-type {
         width: 20px;
-        height: 60px;
+        height: fit-content;
         padding: 2px;
         background: rgba($color: #000000, $alpha: 1);
         font-family: "微软雅黑";
@@ -332,7 +399,6 @@ export default {
     align-items: center;
     font-size: 20px;
     font-weight: 500;
-    border: 1px solid #eee;
     color: rgba(162, 162, 162, 1);
   }
   .pagination-wrapper {
