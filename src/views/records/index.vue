@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-26 19:06:55
+ * @LastEditTime: 2021-04-26 19:46:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -431,8 +431,9 @@ export default {
               remark: value
             }
             // console.log(borrowObj)
-            let data = await this.$api.borrowRecordApi.handleRequest(borrowObj)
-            console.log(data)
+            let { code, msg } = await this.$api.borrowRecordApi.handleRequest(borrowObj)
+            if(code !== 200)throw new Error(msg)
+            this.$message.success(msg)
             this.selectId = "";
             // 重新查表
             this.getTableList();
@@ -440,7 +441,9 @@ export default {
             this.$message.error(e.message);
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          console.log(123)
+        });
     },
     // 拒绝借出请求
     // refuseBorrow(){
@@ -456,10 +459,16 @@ export default {
     //   }
     // },
     // 确认借出
-    confirmBorrow() {
+    async confirmBorrow() {
       try {
+        let confirmObj = {
+          id: this.selectId,
+          flag: 1
+        }
         // 确认借出请求
-
+        let { code, msg } = await this.$api.borrowRecordApi.handleRequest(confirmObj)
+        if(code !== 200)throw new Error(msg)
+        this.$message.success(msg)
         this.borrowDialogVisible = false;
         this.selectId = "";
         // 重新查表
