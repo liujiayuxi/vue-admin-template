@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-22 22:32:16
+ * @LastEditTime: 2021-04-26 19:06:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -72,22 +72,21 @@
               @click="agreeBorrow(scope.row)"
               type="text"
               size="small"
-              v-if="scope.row.type == '待审核'"
-              >处理借阅</el-button
+              v-if="scope.row.type == '借出申请中'"
+              ><i class="el-icon-connection"></i>处理借阅</el-button
             >
             <el-button
               @click="agreeLend(scope.row)"
               type="text"
               size="small"
-              v-if="scope.row.type == '未还'"
-              >同意归还</el-button
+              v-if="scope.row.type == '归还申请中'"
+              ><i class="el-icon-files"></i>同意归还</el-button
             >
             <el-button
               @click="showHistory(scope.row)"
               type="text"
               size="small"
-              v-if="scope.row.type == '未还'"
-              >借还历史</el-button
+              ><i class="el-icon-time"></i>借还历史</el-button
             >
           </template>
         </el-table-column>
@@ -205,13 +204,14 @@ export default {
     },
   },
   async mounted() {
+  // 查借还类型
     await this.getSearchType()
     // 创建时先查表
     await this.getTableList();
     // 设置定时器
     this.timer = setInterval(() => {
       this.getTableList();
-    }, 5000);
+    }, 20000);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -219,7 +219,7 @@ export default {
   computed: {
     selectBookName() {
       let temp = this.tableData.find((item) => {
-        return item.bookId == this.selectId;
+        return item.id == this.selectId;
       });
       if (temp) {
         return temp.bookName;
@@ -268,62 +268,93 @@ export default {
           let recordsObj = {
             borrowStatus,
             borrowDateStart: this.startTime,
-            borrowDateEnd: this.endTime
+            borrowDateEnd: this.endTime,
+            // ...this.pageConfig
           }
-          let data = await this.$api.borrowRecordApi.searchBookRecords(recordsObj)
-          console.log(data);
-          let arr = [
-            {
-              bookId: 1,
-              borrowId: "12345678910",
-              bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-              press: "人民邮电出版社",
-              author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-              borrowTime: "2020-06-20",
-              type: 3,
-              brokenInfo: "已逾期3天",
-            },
-            {
-              bookId: 2,
-            borrowId: "12345678910",
-              bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-              press: "人民邮电出版社",
-              author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-              borrowTime: "2020-06-20",
-              lendTime: "2020-07-20",
-              type: 1,
-            },
-            {
-              bookId: 3,
-            borrowId: "12345678910",
-              bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-              press: "人民邮电出版社",
-              author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-              borrowTime: "2020-06-20",
-              lendTime: "2020-07-20",
-              type: 5,
-            },
-          ];
-          arr.forEach((item) => {
-            switch (item.type) {
-              case 1:
-                item.type = "已借";
-                break;
-              case 2:
-                item.type = "已还";
-                break;
-              case 3:
-                item.type = "未还";
-                break;
-              case 4:
-                item.type = "未通过";
-                break;
-              case 5:
-                item.type = "待审核";
-                break;
-            }
-          });
-          this.$set(this.$data, "tableData", arr);
+          let { code, total, rows, msg } = await this.$api.borrowRecordApi.searchBookRecords(recordsObj)
+          if( code!== 200 ) throw new Error(msg)
+          this.total = total
+          // console.log(data);
+          // let arr = [
+          //   {
+          //     bookId: 1,
+          //     borrowId: "12345678910",
+          //     bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+          //     press: "人民邮电出版社",
+          //     author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+          //     borrowTime: "2020-06-20",
+          //     type: 3,
+          //     brokenInfo: "已逾期3天",
+          //   },
+          //   {
+          //     bookId: 2,
+          //   borrowId: "12345678910",
+          //     bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+          //     press: "人民邮电出版社",
+          //     author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+          //     borrowTime: "2020-06-20",
+          //     lendTime: "2020-07-20",
+          //     type: 1,
+          //   },
+          //   {
+          //     bookId: 3,
+          //   borrowId: "12345678910",
+          //     bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
+          //     press: "人民邮电出版社",
+          //     author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
+          //     borrowTime: "2020-06-20",
+          //     lendTime: "2020-07-20",
+          //     type: 5,
+          //   },
+          // ];
+          // arr.forEach((item) => {
+          //   switch (item.type) {
+          //     case 1:
+          //       item.type = "已借";
+          //       break;
+          //     case 2:
+          //       item.type = "已还";
+          //       break;
+          //     case 3:
+          //       item.type = "未还";
+          //       break;
+          //     case 4:
+          //       item.type = "未通过";
+          //       break;
+          //     case 5:
+          //       item.type = "待审核";
+          //       break;
+          //   }
+          // });
+
+        //   <el-table-column prop="type" label="类型" sortable> </el-table-column>
+        // <el-table-column prop="borrowId" label="借阅证编号" sortable></el-table-column>
+        // <el-table-column prop="bookName" label="书名" sortable>
+        // </el-table-column>
+        // <el-table-column prop="press" label="出版社" sortable>
+        // </el-table-column>
+        // <el-table-column prop="author" label="作者" sortable> </el-table-column>
+        // <el-table-column prop="borrowTime" label="借书日期" sortable>
+        // </el-table-column>
+        // <el-table-column prop="lendTime" label="还书日期" sortable>
+        // </el-table-column>
+        // <el-table-column prop="brokenInfo" label="违章信息" sortable>
+        // </el-table-column>
+          let tempArr = []
+          rows.forEach(item => {
+              tempArr.push({
+                id: item.id,
+                type: item.borrowStatus,
+                borrowId: item.user.studentNum,
+                bookName: item.book.name,
+                press: item.book.publisher,
+                author: item.book.author,
+                borrowTime: item.borrowDate,
+                lendTime: item.returnDate,
+                brokenInfo: item.illegal
+              })
+          })
+          this.$set(this.$data, "tableData", tempArr);
       } catch (e) {
         this.$message.error(e.message);
       } finally {
@@ -331,7 +362,16 @@ export default {
       }
     },
     //   重置
-    resetQuery() {},
+    resetQuery() {
+      this.type = ''
+      this.date = ''
+      if(this.pageConfig.pageNum == 1){
+        this.getTableList()
+      }else {
+        this.pageConfig.pageNum = 1
+      }
+      
+    },
     showHistory(row) {
       // console.log(row)
       try {
@@ -370,7 +410,7 @@ export default {
     },
     // 处理借出
     agreeBorrow(row) {
-      this.selectId = row.bookId;
+      this.selectId = row.id;
       this.borrowDialogVisible = true;
     },
     // 拒绝借出
@@ -382,11 +422,17 @@ export default {
         inputPattern: /\S+/,
         inputErrorMessage: "拒绝原因不能为空",
       })
-        .then(({ value }) => {
-          console.log(this.selectId);
+        .then(async ({ value }) => {
           try {
             // 拒绝借出请求 this.selectId为选中图书的编号
-
+            let borrowObj = {
+              id: this.selectId,
+              flag: 0,
+              remark: value
+            }
+            // console.log(borrowObj)
+            let data = await this.$api.borrowRecordApi.handleRequest(borrowObj)
+            console.log(data)
             this.selectId = "";
             // 重新查表
             this.getTableList();
@@ -424,7 +470,7 @@ export default {
     },
     // 同意归还
     agreeLend(row) {
-      this.selectId = row.bookId;
+      this.selectId = row.id;
       this.lendDialogVisible = true;
     },
     // 取消归还
