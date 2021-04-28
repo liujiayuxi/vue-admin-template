@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-24 11:00:46
- * @LastEditTime: 2021-04-07 15:08:04
+ * @LastEditTime: 2021-04-28 22:44:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\libraryInfo\index.vue
@@ -58,17 +58,59 @@ export default {
   name: "library-info",
   data() {
     return {
-      bookNumber: 541215,
-      userNumber: 123698,
+      bookNumber: 0,
+      userNumber: 0,
+      bookArr: [],
+      bookDetailX: [],
+      bookDetailY: [],
+      userArr: [],
     };
   },
   watch: {},
-  mounted() {
+  async mounted() {
+    await this.getLibraryInfo()
     this.bookChartInit();
     this.userChartInit();
     this.statisticChartInit();
   },
   methods: {
+    async getLibraryInfo(){
+      await this.$api.singleInfoApi.getLibraryInfo().then(res => {
+        let { code, msg, data } = res
+        if(code !== 200)throw new Error(msg)
+        
+        // 图书概览数据
+        let { bookDetail, borrowBookDetail, userDetail } = data
+        bookDetail.forEach(item => {
+          this.bookNumber = this.bookNumber + item.count
+          item.name = item.borrowStatus + item.count + '本'
+          item.value = item.count
+        });
+        this.$set(this.$data, 'bookArr', bookDetail);
+
+        // 用户概览数据
+        userDetail.forEach(item => {
+          if(item.userType == 'superAdmin'){
+            item.userType = '管理员'
+          }else if(item.userType == 'normal'){
+            item.userType = '普通用户'
+          }
+          this.userNumber = this.userNumber + item.count
+          item.name = item.userType + item.count + '个'
+          item.value = item.count
+        });
+        this.$set(this.$data, 'userArr', userDetail);
+
+        // 近一周借书统计数据
+        borrowBookDetail.forEach(item => {
+          this.bookDetailX.push(item.borrowDate)
+          this.bookDetailY.push(item.count)
+        });
+
+      }).catch(err => {
+        this.$message.error(err.message)
+      })
+    },
     bookChartInit() {
       var myChart = this.$echarts.init(document.getElementById("book"));
       window.addEventListener("resize", function () {
@@ -104,19 +146,14 @@ export default {
             mark: { show: true },
           },
         },
-        color: ["#3748DA", "#679CE3", "#FFBC5C", "#FF6435"],
+        color: ["#3748DA", "#FFBC5C", "#FF6435"],
         series: [
           {
             name: "面积模式",
             type: "pie",
             center: ["50%", "50%"],
             radius: ["40%", "80%"],
-            data: [
-              { value: 38, name: "在线9999个" },
-              { value: 32, name: "离线9999个" },
-              { value: 30, name: "未连接9999个" },
-              { value: 40, name: "异常9999个" },
-            ],
+            data: this.bookArr,
           },
         ],
       };
@@ -165,10 +202,7 @@ export default {
             type: "pie",
             center: ["50%", "50%"],
             radius: ["40%", "80%"],
-            data: [
-              { value: 4, name: "管理员 20" },
-              { value: 96, name: "普通用户 480" },
-            ],
+            data: this.userArr,
           },
         ],
       };
@@ -192,7 +226,7 @@ export default {
 
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: this.bookDetailX,
           axisTick: {
             show: false,
           },
@@ -208,7 +242,7 @@ export default {
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: this.bookDetailY,
             type: "line",
             smooth: true
           },

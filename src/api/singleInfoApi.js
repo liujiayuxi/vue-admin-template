@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 13:37:54
- * @LastEditTime: 2021-04-21 18:37:03
+ * @LastEditTime: 2021-04-28 22:12:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\api\singleInfo.js
@@ -22,4 +22,9 @@ export function editInfo(params = {}) {
 
 export function changePwd(params = {}) {
     return request.putNormal('/library/auth/changePassword', params)
+}
+
+// 获取图书馆echart信息
+export function getLibraryInfo(params = {}) {
+  return request.get('/library/info', params)
 }

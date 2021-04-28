@@ -1,7 +1,7 @@
 <!--
  * @Author: LikSeven
  * @Date: 2021-03-03 11:00:02
- * @LastEditTime: 2021-04-21 19:42:30
+ * @LastEditTime: 2021-04-28 22:04:45
  * @LastEditors: Please set LastEditors
  * @Description: 
  * @FilePath: \iot-device-manage\src\pages\change-password\index.vue
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { aesEncrypt } from '@/utils/index.js'
 export default {
     name: 'change-password',
     data() {
@@ -85,6 +86,8 @@ export default {
                     newPassword: this.ruleForm.newPassword,
                     id: this.$store.getters.id
                 }
+                changeObj.oldPassword = aesEncrypt(changeObj.oldPassword)
+                changeObj.newPassword = aesEncrypt(changeObj.newPassword)
                 // let {oldPassword,newPassword} = this.ruleForm;
                 await this.$api.singleInfoApi.changePwd(changeObj).then(async res => {
                     let {code,msg} = res;
