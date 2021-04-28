@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-08 15:19:07
+ * @LastEditTime: 2021-04-28 21:02:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -57,9 +57,9 @@
         <el-table-column prop="brokenInfo" label="违章信息" sortable> </el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '未还'"
+            <el-button @click="agreeLend(scope.row)" type="text" size="small" v-if="scope.row.type == '借出'"
               >归还</el-button
-            ><el-button @click="showReason(scope.row)" type="text" size="small" v-if="scope.row.type == '未通过'"
+            ><el-button @click="showReason(scope.row)" type="text" size="small" v-if="scope.row.type == '申请未通过'"
               >查看原因</el-button
             >
           </template>
@@ -96,28 +96,7 @@ export default {
     return {
       type: "",
       date: '',
-      options: [
-        {
-          label: "已借",
-          value: 1,
-        },
-        {
-          label: "已还",
-          value: 2,
-        },
-        {
-          label: "未还",
-          value: 3,
-        },
-        {
-          label: "未通过",
-          value: 4,
-        },
-        {
-          label: "审核中",
-          value: 5,
-        }
-      ],
+      options: [],
       tableData: [],
       pageConfig: {
         pageNum: 1,
@@ -146,21 +125,23 @@ export default {
         deep: true,
       },
   },
-  mounted(){
+  async mounted(){
+    // 查借还类型
+    await this.getSearchType();
       // 创建时先查表
-    this.getTableList();
+    await this.getTableList();
     // 设置定时器
-    this.timer = setInterval(() => {
-      this.getTableList();
-    }, 5000);
+    // this.timer = setInterval(() => {
+    //   this.getTableList();
+    // }, 5000);
   },
    beforeDestroy() {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   },
   computed: {
     selectBookName() {
       let temp = this.tableData.find((item) => {
-        return item.bookId == this.selectId;
+        return item.id == this.selectId;
       });
       if (temp) {
         return temp.bookName;
@@ -179,6 +160,23 @@ export default {
     }
   },
   methods: {
+    // 查借还类型
+    async getSearchType(){
+      try{
+        let { data, code, msg } = await this.$api.borrowRecordApi.searchRecordsType();
+        if(code !== 200 )throw new Error(msg)
+        let arr = []
+        data.forEach((item,index) => {
+            arr.push({
+              label: item,
+              value: index+1
+            })
+        })
+        this.$set(this.$data, 'options', arr)
+      }catch(e){
+        this.$message.error(e.message)
+      }
+    },
     showReason(row){
       this.$alert(row.reason, '详情', {
           confirmButtonText: '确定',
@@ -186,59 +184,61 @@ export default {
         });
     },
     //   查表
-    getTableList() {
-        try{
-            let arr= [{
-                bookId: 1,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                press: "人民邮电出版社",
-                author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-                borrowTime: "2020-06-20",
-                type: 3,
-                brokenInfo: '已逾期3天',
-            },
-            {
-                bookId: 2,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                press: "人民邮电出版社",
-                author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-                borrowTime: "2020-06-20",
-                lendTime: "2020-07-20",
-                type: 4,
-                reason: '逾期次数太多，请联系管理员缴纳相应费用'
-            },
-            {
-                bookId: 3,
-                bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-                press: "人民邮电出版社",
-                author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-                borrowTime: "2020-06-20",
-                type: 5
-            },];
-            arr.forEach(item => {
-                switch(item.type){
-                    case 1:
-                        item.type = "已借";break;
-                    case 2:
-                        item.type = "已还";break;
-                    case 3:
-                        item.type = "未还";break;
-                    case 4:
-                        item.type = "未通过";break;  
-                    case 5:
-                        item.type = "审核中";break; 
-                }
-            })
-            this.$set(this.$data, 'tableData', arr)
-        }catch(e){
-            this.$message.error(e.message)
-        }
+    async getTableList() {
+      try {
+          this.loading = true;
+          let borrowStatus = ''
+          let temp = this.options.find(item => {
+            return item.value == this.type
+          })
+          if(temp){
+              borrowStatus = temp.label
+          }
+          let recordsObj = {
+            borrowStatus,
+            borrowDateStart: this.startTime,
+            borrowDateEnd: this.endTime,
+            ...this.pageConfig
+          }
+          let { code, total, rows, msg } = await this.$api.borrowRecordApi.searchBookRecords(recordsObj)
+          if( code!== 200 ) throw new Error(msg)
+          this.total = total
+          let tempArr = []
+          rows.forEach(item => {
+              tempArr.push({
+                id: item.id,
+                type: item.borrowStatus,
+                borrowId: item.user.studentNum,
+                bookId: item.bookId,
+                bookName: item.book.name,
+                press: item.book.publisher,
+                author: item.book.author,
+                borrowTime: item.borrowDate,
+                lendTime: item.returnDate,
+                brokenInfo: item.illegal,
+                reason: item.remark
+              })
+          })
+          this.$set(this.$data, "tableData", tempArr);
+      } catch (e) {
+        this.$message.error(e.message);
+      } finally {
+        this.loading = false;
+      }
     },
     //   重置
-    resetQuery() {},
+    resetQuery() {
+      this.type = ''
+      this.date = ''
+      if(this.pageConfig.pageNum == 1){
+        this.getTableList()
+      }else {
+        this.pageConfig.pageNum = 1
+      }
+    },
     // 同意归还
     agreeLend(row) {
-      this.selectId = row.bookId;
+      this.selectId = row.id;
       this.lendDialogVisible = true;
     },
     // 取消归还
@@ -247,10 +247,12 @@ export default {
       this.selectId = '';
     },
     // 确认归还
-    confirmLend(){
+    async confirmLend(){
       try{
         // 确认归还请求
-
+        let { code, msg } = await this.$api.borrowRecordApi.returnBook({id: this.selectId})
+        if(code !== 200)throw new Error(msg)
+        this.$message.success(msg)
         this.lendDialogVisible = false;
         this.selectId = '';
         // 重新查表
@@ -268,7 +270,7 @@ export default {
     cellStyle({row, columnIndex}){
       if(columnIndex == 7){
         return {color: 'rgba(255,0,0,1)'}
-      } else if (row.type == "审核中") {
+      } else if (row.type == "借出申请中") {
         return { color: "rgba(245, 174, 37, 1)" };
       }
     }

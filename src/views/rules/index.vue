@@ -1,15 +1,15 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-02 17:07:15
- * @LastEditTime: 2021-04-22 21:46:32
- * @LastEditors: LikSeven
+ * @LastEditTime: 2021-04-28 21:14:11
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\rules\index.vue
 -->
 <template>
     <div class="rules">
         <div class="title">借书规则</div>
-        <div>
+        <div class="rules-table">
             <el-table :data="tableList">
                 <el-table-column
                     v-for="item in headData"
@@ -21,6 +21,7 @@
                 </el-table-column>
             </el-table>
         </div>
+        <div class="tips">温馨提示：请读者借书前仔细阅读读者规则，本图书管理系统将严格按照此规则进行管理。</div>
     </div>
 </template>
 
@@ -63,10 +64,21 @@
 
 <style lang="scss" scoped>
 .rules{
-    padding: 40px;
+    // padding: 40px;
     .title{
-        font-size: 18px;
-        margin-bottom: 20px;
+        width: 100px;
+        font-size: 22px;
+        margin: 20px auto;
+        color: #a2a2a2;
+    }
+    .rules-table{
+        border: 1px solid #eeeeee;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .tips{
+        color: red;
+        padding: 10px;
     }
 }
 </style>
