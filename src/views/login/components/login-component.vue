@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-12 15:32:46
- * @LastEditTime: 2021-04-21 19:56:09
+ * @LastEditTime: 2021-04-28 19:04:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\login\components\username-login.vue
@@ -66,6 +66,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { aesEncrypt } from '@/utils/index.js'
 export default {
   name: "username-login",
   props: {
@@ -141,9 +142,9 @@ export default {
       });
     },
     handleLogin() {
+      this.loading = true;
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          this.loading = true;
           // 判断是什么方式登录
           if(this.loginType == 'studentNum'){
             try{
@@ -153,18 +154,19 @@ export default {
               // 不为本校学生 return
               if(!data.data){
                   this.$message.error(data.msg)
+                  this.loading = false;
                   return
               }
             }catch(e){
               this.$message.error(e.message)
-            }finally{
-              this.loading = false;
             }
             
             this.loginForm.loginType = 'studentNum'
           }else if(this.loginType == 'username' || this.loginType == 'email'){
             this.loginForm.loginType = 'username'
           }
+
+          this.loginForm.password = aesEncrypt(this.loginForm.password)
 
           this.$store
             .dispatch("user/login", this.loginForm)

@@ -2,6 +2,11 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+ import {
+  encryptPK
+} from '@/settings'
+import CryptoJS from 'crypto-js';
+
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -138,4 +143,41 @@ export function getLocalStorage(name, defaultType = {}) {
 export function delLocalStorage(name) {
   if (!name) return;
   window.localStorage.removeItem(name);
+}
+
+// 生成16位数key, 保存于session，从session中取，避免手动刷新前段更新了密钥，而后端密钥不一致问题
+// export const aesKey = sessionStorage.getItem('ak_ak') || randomWord(false, 16);
+// sessionStorage.getItem('ak_ak') || sessionStorage.setItem('ak_ak', aesKey);
+
+export function getAesKey() {
+  return encryptPK // localStorage.getItem('ak_ak');
+}
+
+
+/**
+* aes，ECB操作模式加密函数
+* @param {String} word 要加密的字符串
+* @returns {String} 加密后的密文
+*/
+export function aesEncrypt(word) {
+  let aesKeyParse = CryptoJS.enc.Utf8.parse(getAesKey());
+  let encrypted = CryptoJS.AES.encrypt(word, aesKeyParse, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+  });
+  return encrypted.toString();
+}
+
+/**
+* aes ECB操作模式解密函数
+* @param {String} word 密文
+* @returns {String} 解密后的明文
+*/
+export function aesDecrypt(word) {
+  let aesKeyParse = CryptoJS.enc.Utf8.parse(getAesKey());
+  let decrypt = CryptoJS.AES.decrypt(word, aesKeyParse, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+  });
+  return CryptoJS.enc.Utf8.stringify(decrypt).toString();
 }

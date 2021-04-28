@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-26 19:46:23
+ * @LastEditTime: 2021-04-28 20:12:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -125,14 +125,14 @@
         v-if="dialogFormVisible"
         width="40%"
       >
-        <el-table :data="detailData" style="width: 100%" stripe>
-          <el-table-column prop="bookId" label="图书ID"> </el-table-column>
+        <el-table class="history-table" :data="detailData" style="width: 100%" stripe>
+          <el-table-column prop="bookId" label="图书ID" width="80px"> </el-table-column>
           <el-table-column prop="bookName" label="书名"> </el-table-column>
           <el-table-column prop="borrowId" label="借阅证" sortable>
           </el-table-column>
-          <el-table-column prop="borrowTime" label="借书日期" sortable>
+          <el-table-column prop="borrowTime" label="借书日期" sortable width="150px">
           </el-table-column>
-          <el-table-column prop="lendTime" label="还书日期" sortable>
+          <el-table-column prop="lendTime" label="还书日期" sortable width="150px">
           </el-table-column>
           <el-table-column prop="handlePerson" label="处理人" sortable>
           </el-table-column>
@@ -149,28 +149,7 @@ export default {
     return {
       type: "",
       date: "",
-      options: [
-        // {
-        //   label: "借出",
-        //   value: 1,
-        // },
-        // {
-        //   label: "已还",
-        //   value: 2,
-        // },
-        // {
-        //   label: "未还",
-        //   value: 3,
-        // },
-        // {
-        //   label: "未通过",
-        //   value: 4,
-        // },
-        // {
-        //   label: "待审核",
-        //   value: 5,
-        // },
-      ],
+      options: [],
       tableData: [],
       detailData: [],
       pageConfig: {
@@ -185,7 +164,7 @@ export default {
       lendDialogVisible: false,
       // 借还记录弹窗
       dialogFormVisible: false,
-      timer: "",
+      // timer: "",
       loading: false,
     };
   },
@@ -209,12 +188,12 @@ export default {
     // 创建时先查表
     await this.getTableList();
     // 设置定时器
-    this.timer = setInterval(() => {
-      this.getTableList();
-    }, 20000);
+    // this.timer = setInterval(() => {
+    //   this.getTableList();
+    // }, 20000);
   },
   beforeDestroy() {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   },
   computed: {
     selectBookName() {
@@ -269,83 +248,18 @@ export default {
             borrowStatus,
             borrowDateStart: this.startTime,
             borrowDateEnd: this.endTime,
-            // ...this.pageConfig
+            ...this.pageConfig
           }
           let { code, total, rows, msg } = await this.$api.borrowRecordApi.searchBookRecords(recordsObj)
           if( code!== 200 ) throw new Error(msg)
           this.total = total
-          // console.log(data);
-          // let arr = [
-          //   {
-          //     bookId: 1,
-          //     borrowId: "12345678910",
-          //     bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-          //     press: "人民邮电出版社",
-          //     author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-          //     borrowTime: "2020-06-20",
-          //     type: 3,
-          //     brokenInfo: "已逾期3天",
-          //   },
-          //   {
-          //     bookId: 2,
-          //   borrowId: "12345678910",
-          //     bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-          //     press: "人民邮电出版社",
-          //     author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-          //     borrowTime: "2020-06-20",
-          //     lendTime: "2020-07-20",
-          //     type: 1,
-          //   },
-          //   {
-          //     bookId: 3,
-          //   borrowId: "12345678910",
-          //     bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-          //     press: "人民邮电出版社",
-          //     author: "Nicholas C. Zakas（尼古拉斯•泽卡斯）",
-          //     borrowTime: "2020-06-20",
-          //     lendTime: "2020-07-20",
-          //     type: 5,
-          //   },
-          // ];
-          // arr.forEach((item) => {
-          //   switch (item.type) {
-          //     case 1:
-          //       item.type = "已借";
-          //       break;
-          //     case 2:
-          //       item.type = "已还";
-          //       break;
-          //     case 3:
-          //       item.type = "未还";
-          //       break;
-          //     case 4:
-          //       item.type = "未通过";
-          //       break;
-          //     case 5:
-          //       item.type = "待审核";
-          //       break;
-          //   }
-          // });
-
-        //   <el-table-column prop="type" label="类型" sortable> </el-table-column>
-        // <el-table-column prop="borrowId" label="借阅证编号" sortable></el-table-column>
-        // <el-table-column prop="bookName" label="书名" sortable>
-        // </el-table-column>
-        // <el-table-column prop="press" label="出版社" sortable>
-        // </el-table-column>
-        // <el-table-column prop="author" label="作者" sortable> </el-table-column>
-        // <el-table-column prop="borrowTime" label="借书日期" sortable>
-        // </el-table-column>
-        // <el-table-column prop="lendTime" label="还书日期" sortable>
-        // </el-table-column>
-        // <el-table-column prop="brokenInfo" label="违章信息" sortable>
-        // </el-table-column>
           let tempArr = []
           rows.forEach(item => {
               tempArr.push({
                 id: item.id,
                 type: item.borrowStatus,
                 borrowId: item.user.studentNum,
+                bookId: item.bookId,
                 bookName: item.book.name,
                 press: item.book.publisher,
                 author: item.book.author,
@@ -372,41 +286,26 @@ export default {
       }
       
     },
-    showHistory(row) {
-      // console.log(row)
-      try {
-        // 确认借出请求 row.bookId为图书ID 用bookId去查这本书的历史记录
-        // arr 为后端返回的数组
-        let arr = [
-          {
-            bookId: 1,
-            bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-            borrowId: "12345678910",
-            borrowTime: "2020-08-20",
-            handlePerson: "张三",
-          },
-          {
-            bookId: 1,
-            bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-            borrowId: "12345678910",
-            borrowTime: "2020-07-20",
-            lendTime: "2020-08-20",
-            handlePerson: "张三",
-          },
-          {
-            bookId: 1,
-            bookName: "javascript高级程序设计aaaaabyy程序设计aaaaaaaaa",
-            borrowId: "12345678910",
-            borrowTime: "2020-06-20",
-            lendTime: "2020-07-20",
-            handlePerson: "张三",
-          },
-        ];
-        this.$set(this.$data, "detailData", arr);
-        this.dialogFormVisible = true;
-      } catch (e) {
-        this.$message.error(e.message);
-      }
+    async showHistory(row) {
+      await this.$api.borrowRecordApi.searchBookRecords({bookId: row.bookId}).then(res => {
+        let { code, msg, rows } = res
+          if(code !== 200)throw new Error(msg)
+          let tempArr = []
+          rows.forEach(item => {
+              tempArr.push({
+                borrowId: item.user.studentNum,
+                bookId: item.bookId,
+                bookName: item.book.name,
+                borrowTime: item.borrowDate,
+                lendTime: item.returnDate,
+                handlePerson: "张三",
+              })
+          })
+          this.$set(this.$data, "detailData", tempArr);
+          this.dialogFormVisible = true
+      }).catch(err => {
+          this.$message.error(err.message);
+      })
     },
     // 处理借出
     agreeBorrow(row) {
@@ -488,10 +387,17 @@ export default {
       this.selectId = "";
     },
     // 确认归还
-    confirmLend() {
+    async confirmLend() {
       try {
         // 确认归还请求
-
+         let confirmObj = {
+          id: this.selectId,
+          flag: 1
+        }
+        // 确认借出请求
+        let { code, msg } = await this.$api.borrowRecordApi.handleRequest(confirmObj)
+        if(code !== 200)throw new Error(msg)
+        this.$message.success(msg)
         this.lendDialogVisible = false;
         this.selectId = "";
         // 重新查表
@@ -538,6 +444,10 @@ export default {
       margin-right: 30px;
       padding-top: 17px;
     }
+  }
+  .history-table{
+    height: 360px; 
+    overflow-y: auto;
   }
 }
 </style>
