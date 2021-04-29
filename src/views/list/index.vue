@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-28 21:02:10
+ * @LastEditTime: 2021-04-29 18:20:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -25,6 +25,10 @@
               :value="item.value"
             />
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="书名" label-width="80px">
+          <el-input v-model="bookName" placeholder="请输入书名" clearable></el-input>
         </el-form-item>
 
         <el-form-item label="借还日期" label-width="110px">
@@ -96,6 +100,7 @@ export default {
     return {
       type: "",
       date: '',
+      bookName: '',
       options: [],
       tableData: [],
       pageConfig: {
@@ -198,6 +203,7 @@ export default {
             borrowStatus,
             borrowDateStart: this.startTime,
             borrowDateEnd: this.endTime,
+            bookName: this.bookName,
             ...this.pageConfig
           }
           let { code, total, rows, msg } = await this.$api.borrowRecordApi.searchBookRecords(recordsObj)
@@ -230,6 +236,7 @@ export default {
     resetQuery() {
       this.type = ''
       this.date = ''
+      this.bookName = ''
       if(this.pageConfig.pageNum == 1){
         this.getTableList()
       }else {

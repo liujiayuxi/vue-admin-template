@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-12 15:32:46
- * @LastEditTime: 2021-04-28 19:04:02
+ * @LastEditTime: 2021-04-29 16:35:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\login\components\username-login.vue
@@ -86,11 +86,6 @@ export default {
   },
   data() {
     const validateUsername = (rule, value, callback) => {
-      // if (!validUsername(value)) {
-      //   callback(new Error("Please enter the correct user name"));
-      // } else {
-      //   callback();
-      // }
       if (value.length <= 0) {
         callback(new Error("Please enter the correct user name"));
       } else {
@@ -177,8 +172,10 @@ export default {
             })
             .catch(e => {
               this.$message.error(e.message)
+            }).finally(() => {
+              this.loading = false;
             })
-            this.loading = false;
+            
         } else {
           console.log("error submit!!");
           return false;
