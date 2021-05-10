@@ -7,7 +7,9 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
+          <img :src="squareUrl" class="user-avatar">
+          <!-- <el-avatar shape="square" :size="size" :src="squareUrl"></el-avatar> -->
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -56,6 +58,11 @@ export default {
       'sidebar',
       'avatar'
     ])
+  },
+  data() {
+    return {
+      squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
+    }
   },
   methods: {
     toggleSideBar() {

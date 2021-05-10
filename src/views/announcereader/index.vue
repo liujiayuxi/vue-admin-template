@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-01 17:41:31
- * @LastEditTime: 2021-04-22 23:26:03
+ * @LastEditTime: 2021-05-10 13:26:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\announcement\index.vue
@@ -31,9 +31,6 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="add">
-      <el-button type="primary" @click="addAnnouncement">添加公告</el-button>
-    </div>
     <div class="announcement-table">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column type="index" label="序号" width="100">
@@ -43,12 +40,6 @@
         <el-table-column prop="publishDate" label="发布时间"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <!-- <el-button @click="editRow(scope.row)" type="text" size="small"
-              >修改</el-button
-            > -->
-            <el-button @click="deleteRow(scope.row)" type="text" size="small"
-              ><i class="el-icon-delete"></i>删除</el-button
-            >
             <el-button @click="showDetail(scope.row)" type="text" size="small"
               ><i class="el-icon-s-operation"></i>查看详情</el-button
             >
@@ -119,32 +110,6 @@
     >
       <detail :detailData="selectRow"></detail>
     </el-dialog>
-    <!-- 添加公告弹窗 -->
-    <el-dialog
-      v-if="addAnnouncementVisible"
-      title="添加公告"
-      :visible.sync="addAnnouncementVisible"
-      width="30%"
-    >
-     <el-form :model="addForm">
-        <el-form-item label="标题" label-width="80px">
-          <el-input v-model="addForm.title" style="width: 50%"></el-input>
-        </el-form-item>
-        <el-form-item label="内容" label-width="80px">
-          <el-input
-            type="textarea"
-            v-model="addForm.detail"
-            resize="none"
-            rows="3"
-            style="width: 70%"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label-width="80px">
-          <el-button type="primary" @click="onSubmit">添加</el-button>
-          <el-button @click="cancel">取消</el-button>
-      </el-form-item>
-      </el-form> 
-    </el-dialog>
   </div>
 </template>
 
@@ -212,8 +177,6 @@ export default {
       },
       // 总页数
       total: 0,
-      // 添加公告弹窗
-      addAnnouncementVisible: false,
       deleteId: ''
     };
   },
@@ -254,12 +217,6 @@ export default {
         this.form[key] = row[key]
       }
       this.dialogFormVisible = true;
-    },
-    // 删除行
-    deleteRow(row) {
-      this.deleteTitle = row.title;
-      this.deleteId = row.id;
-      this.deleteDialogVisible = true;
     },
     // 取消删除
     cancelDelete() {
@@ -323,30 +280,6 @@ export default {
         
         
     },
-    // 打开新增公告弹窗
-    addAnnouncement(){
-      this.addAnnouncementVisible = true
-    },
-    // 取消新增公告
-    cancel(){
-      this.addAnnouncementVisible = false;
-      for(let key in this.addForm){
-        this.addForm[key] = ''
-      }
-    },
-    // 提交新增公告
-    async onSubmit(){
-      try{
-        // 发送添加公告请求
-        let { code, msg } = await this.$api.announcementApi.addAnnouncement(this.addForm);
-        if(code !== 200) throw new Error(msg);
-        this.$message.success(msg)
-        this.cancel()
-        this.getTableList()
-      }catch(e){
-        this.$message.error(e.message)
-      }
-    }
   },
 };
 </script>
