@@ -1,8 +1,8 @@
 <!--
  * @Author: your displayName
  * @Date: 2021-02-23 14:23:31
- * @LastEditTime: 2021-04-22 20:51:48
- * @LastEditors: LikSeven
+ * @LastEditTime: 2021-05-06 18:33:26
+ * @LastEditors: Please set LastEditors
  * @remark: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\edit-user.vue
 -->
@@ -74,7 +74,7 @@
         </el-form-item>
 
         <el-form-item style="display: flex; justify-content: flex-end">
-            <el-button type="primary" @click="onSubmit">{{type?'编辑':'新建'}}</el-button>
+            <el-button type="primary" @click="onSubmit">{{type?'确认':'新建'}}</el-button>
             <el-button @click="cancel">取消</el-button>
         </el-form-item>
     </el-form>

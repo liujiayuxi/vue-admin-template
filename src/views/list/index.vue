@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-29 18:20:19
+ * @LastEditTime: 2021-05-06 15:04:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -82,7 +82,7 @@
         >
         </el-pagination>
       </div>
-      <el-dialog title="提示" :visible.sync="lendDialogVisible" width="30%">
+      <el-dialog title="归还提示" :visible.sync="lendDialogVisible" width="30%">
         <span>您确认归还《{{ selectBookName }}》吗?</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="cancelLend">取 消</el-button>

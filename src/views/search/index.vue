@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-22 21:28:10
+ * @LastEditTime: 2021-05-10 10:39:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -277,10 +277,10 @@ export default {
       // this.showList = this.contactList.filter(item => item.name.match(searchValue));
     },
     handleSizeChange(val) {
-      this.pageSize = val;
+      this.pageConfig.pageSize = val;
     },
     handleCurrentChange(val) {
-      this.pageNum = val;
+      this.pageConfig.pageNum = val;
     },
     async getBookType(){
       try{

@@ -142,6 +142,19 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/admin-rules',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Admin-rules',
+        component: () => import('@/views/adminrules/index'),
+        meta: { title: '读者规则', icon: 'table' }
+      }
+    ]
+  },
+
   // {
   //   path: '/edit-user',
   //   name: 'edit-user',
@@ -219,7 +232,7 @@ export const constantRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/search/index'),
-        meta: { title: '查询图书', icon: 'table' }
+        meta: { title: '查询图书', icon: 'dashboard' }
       },
       // {
       //   path: 'tree',
@@ -263,7 +276,20 @@ export const constantRoutes = [
         path: 'index',
         name: 'Rules',
         component: () => import('@/views/rules/index'),
-        meta: { title: '读者规则', icon: 'eye-open' }
+        meta: { title: '读者规则', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/announce-reader',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Announcement-reader',
+        component: () => import('@/views/announcereader/index'),
+        meta: { title: '查看公告', icon: 'eye-open' }
       }
     ]
   },
