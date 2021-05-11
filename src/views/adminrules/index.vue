@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-02 17:07:15
- * @LastEditTime: 2021-05-10 11:35:28
+ * @LastEditTime: 2021-05-11 11:53:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\rules\index.vue
@@ -137,7 +137,7 @@
         },
         methods: {
             async getRules() {
-                await this.$api.userManageApi.ruleList().then(res => {
+                await this.$api.ruleManageApi.ruleList().then(res => {
                         let {code,msg, rows,total} = res;
                         if(+code !== 200) throw new Error(msg);
                         this.total = total
@@ -180,7 +180,7 @@
                 })
                 this.id = ''
             },
-            confirmDialog(){
+            async confirmDialog(){
                 let confirmObj = {}
                 this.form.forEach(item => {
                     confirmObj[item.prop] = item.value
@@ -189,7 +189,15 @@
                     confirmObj.id = this.id
                 }
                 console.log(confirmObj)
-                this.cancelDialog()
+                await this.$api.ruleManageApi.addRule(confirmObj).then(res => {
+                    let {code, msg} = res
+                    if(code !== 200)throw new Error(msg)
+                    this.$message.success(msg)
+                    this.cancelDialog()
+                    this.getRules()
+                }).catch(e => {
+                    this.$message.error(e.message)
+                })
             },
             beforeClose(done){
                 this.form.forEach(item => {
@@ -206,9 +214,17 @@
                 this.deleteDialogVisible = false
                 this.id = ''
             },
-            confirmDelete(){
+            async confirmDelete(){
                 console.log(this.id)
-                this.cancelDelete()
+                await this.$api.ruleManageApi.deleteRule(this.id).then(res => {
+                    let {code, msg} = res
+                    if(code !== 200)throw new Error(msg)
+                    this.$message.success(msg)
+                    this.cancelDelete()
+                    this.getRules()
+                }).catch(e => {
+                    this.$message.error(e.message)
+                })
             }
         },
         mounted() {

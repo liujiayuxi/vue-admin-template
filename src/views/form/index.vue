@@ -1,8 +1,8 @@
 <!--
  * @Author: your displayName
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-22 21:38:17
- * @LastEditors: LikSeven
+ * @LastEditTime: 2021-05-11 14:47:01
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\index.vue
 -->
@@ -31,7 +31,7 @@
                     </p>
                     <p class="line">
                         <span class="label">角色</span>
-                        <span class="tel">{{ item.rule }}</span>
+                        <span class="tel">{{ item.userType }}</span>
                     </p>
                     <p class="line">
                         <span class="label">借阅证编号</span>
@@ -178,22 +178,22 @@ export default {
             this.getUserList();
         },
         handleSizeChange(val) {
-            this.pageSize = val;
-            this.getUserList();
+            this.pageConfig.pageNum = 1
+            this.pageConfig.pageSize = val;
         },
         handleCurrentChange(val) {
-            this.pageNum = val;
-            this.getUserList();
+            this.pageConfig.pageNum = val;
         },
         async getUserList() {
             try {
-                let {code,msg,rows} = await this.$api.userManageApi.userList(this.params);
+                let {code,msg,rows, total} = await this.$api.userManageApi.userList(this.params);
                 if(+code !== 200) throw new Error(msg);
+                this.total = total
                 let arr = rows.map((item) => {
-                    if (item.rule == 1) {
-                        item.rule = "普通用户";
-                    } else if (item.rule == 2) {
-                        item.rule = "管理员";
+                    if (item.userType == 'normal') {
+                        item.userType = "普通用户";
+                    } else if (item.userType == 'superAdmin') {
+                        item.userType = "管理员";
                     }
 
                     if (item.sex == 1) {

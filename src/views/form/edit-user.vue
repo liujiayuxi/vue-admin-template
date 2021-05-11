@@ -1,40 +1,49 @@
 <!--
  * @Author: your displayName
  * @Date: 2021-02-23 14:23:31
- * @LastEditTime: 2021-05-06 18:33:26
+ * @LastEditTime: 2021-05-11 14:54:54
  * @LastEditors: Please set LastEditors
  * @remark: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\form\edit-user.vue
 -->
 <template>
     <el-form ref="form" :model="form" label-width="100px" label-position="left">
-        <el-form-item label="角色">
-            <el-select v-model="form.rule" placeholder="请选择角色">
+        <el-form-item label="角色" :required="true">
+            <el-select v-model="form.userType" placeholder="请选择角色">
                 <el-option
-                    v-for="item in ruleList"
-                    :label="item.ruledisplayName"
-                    :value="item.ruleId"
-                    :key="item.ruleId"
+                    v-for="item in userList"
+                    :label="item.userValue"
+                    :value="item.userId"
+                    :key="item.userId"
                 ></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
+        <el-form-item label="性别" prop="sex" :required="true">
             <el-radio-group v-model="form.sex">
                 <el-radio :label="1">男</el-radio>
                 <el-radio :label="2">女</el-radio>
             </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="姓名">
+        <el-form-item label="用户名" :required="true">
             <el-input
-                v-model="form.displayName"
+                v-model="form.username"
                 placeholder="请输入用户姓名"
                 maxlength="10"
                 show-word-limit
             ></el-input>
         </el-form-item>
 
-        <el-form-item label="手机">
+        <el-form-item label="姓名" :required="true">
+            <el-input
+                v-model="form.displayName"
+                placeholder="请输入真实姓名"
+                maxlength="10"
+                show-word-limit
+            ></el-input>
+        </el-form-item>
+
+        <el-form-item label="手机" :required="true">
             <el-input
                 v-model="form.phone"
                 placeholder="请输入手机号码"
@@ -43,7 +52,7 @@
             ></el-input>
         </el-form-item>
 
-        <el-form-item label="邮箱">
+        <el-form-item label="邮箱" :required="true">
             <el-input
                 v-model="form.email"
                 placeholder="请输入邮箱"
@@ -52,13 +61,24 @@
             ></el-input>
         </el-form-item>
 
-        <el-form-item label="借阅证编号">
+        <el-form-item label="借阅证编号" :required="true">
             <el-input
                 v-model="form.studentNum"
                 maxlength="16"
                 show-word-limit
                 :disabled="!!type"
             ></el-input>
+        </el-form-item>
+
+        <el-form-item label="借书规则" :required="true">
+            <el-select v-model="form.rule" placeholder="请选择借书规则">
+                <el-option
+                    v-for="item in ruleList"
+                    :label="item.ruleValue"
+                    :value="item.ruleId"
+                    :key="item.ruleId"
+                ></el-option>
+            </el-select>
         </el-form-item>
 
         <el-form-item label="备注">
@@ -87,24 +107,27 @@ export default {
     data() {
         return {
             form: {
-                rule: "",
+                userType: "",
+                username: '',
                 displayName: "",
                 sex: "",
                 email: "",
                 phone: "",
                 studentNum: "",
                 remark: "",
+                rule: ''
             },
-            ruleList: [
+            userList: [
                 {
-                    ruledisplayName: "普通用户",
-                    ruleId: 1,
+                    userValue: "普通用户",
+                    userId: 'normal',
                 },
                 {
-                    ruledisplayName: "管理员",
-                    ruleId: 2,
+                    userValue: "管理员",
+                    userId: 'superAdmin',
                 },
-            ]
+            ],
+            ruleList: []
         };
     },
     computed: {
@@ -114,13 +137,28 @@ export default {
            return Object.keys(temp).length !== 1;
         }
     },
-    mounted() {
+    async mounted() {
+        await this.getRuleList()
         this.getUserItem();
     },
     beforeDestroy() {
         delLocalStorage("userItem");
     },
     methods: {
+        async getRuleList(){
+            await this.$api.ruleManageApi.ruleList().then(res => {
+                        let {code, msg, rows} = res;
+                        if(+code !== 200) throw new Error(msg);
+                        // console.log(rows)
+                        rows.forEach(item => {
+                            this.ruleList.push({
+                                ruleValue: item.borrowLibrary,
+                                ruleId: item.id
+                            })
+                        });
+                    }
+                ).catch( err => this.$message.error(err.message) )
+        },
         getUserItem() {
             let temp = getLocalStorage("userItem");
             if (Object.keys(temp).length > 1) {
@@ -131,10 +169,10 @@ export default {
                     temp.sex = 2;
                 }
                 // 角色转换
-                if (temp.rule == "普通用户") {
-                    temp.rule = 1;
-                } else if (temp.rule == "管理员") {
-                    temp.rule = 2;
+                if (temp.userType == "普通用户") {
+                    temp.userType = 'normal';
+                } else if (temp.userType == "管理员") {
+                    temp.userType = 'superAdmin';
                 }
                 this.$set(this.$data, "form", temp);
             }

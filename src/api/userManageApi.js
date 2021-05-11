@@ -1,8 +1,8 @@
 /*
  * @Author: LikSeven
  * @Date: 2021-04-22 19:46:33
- * @LastEditTime: 2021-04-22 21:37:58
- * @LastEditors: LikSeven
+ * @LastEditTime: 2021-05-11 11:31:48
+ * @LastEditors: Please set LastEditors
  * @Description: 
  * @FilePath: \vue-admin-template\src\api\userManageApi.js
  * 下面的代码没有bug!!!
@@ -29,6 +29,3 @@ export function delUser(ids,params = {}) {
     return request.delete(`/library/user/${ids}`, params)
 }
 
-export function ruleList( params = {}) {
-    return request.get(`/library/rule/list`, params)
-}
