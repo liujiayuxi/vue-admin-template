@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-21 19:50:40
+ * @LastEditTime: 2021-05-11 19:10:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\store\modules\user.js
@@ -17,7 +17,8 @@ const getDefaultState = () => {
     // userInfo: '',
     id: '',
     name: '',
-    avatar: ''
+    avatar: '',
+    roles: []
   }
 }
 
@@ -41,6 +42,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   }
 }
 
@@ -78,6 +82,9 @@ const actions = {
         // commit('SET_NAME', name)SET_ID
         // commit('SET_USER', data.userInfo)
         commit('SET_ID', data.userInfo.id)
+        let roles = []
+        roles.push(data.userInfo.userType)
+        commit('SET_ROLES', roles)
         // commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {

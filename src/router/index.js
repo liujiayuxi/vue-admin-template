@@ -43,7 +43,7 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
+{
     path: '/changePassword',
     component: Layout,
     hidden: true,
@@ -83,22 +83,34 @@ export const constantRoutes = [
       }]
   },
 
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
+
   {
       path: '/dashboard',
       component: Layout,
+      meta: { title: '图书管理', icon: 'dashboard', roles: ['superAdmin'] },
       children: [
         {
           path: 'index',
           name: 'Dashboard',
           component: () => import('@/views/dashboard/index'),
-          meta: { title: '图书管理', icon: 'dashboard' }
+          meta: { title: '图书管理', icon: 'dashboard', roles: ['superAdmin'] }
         },
         {
           path: 'add-book',
           name: 'Dashboard',
           hidden: true,
           component: () => import('@/views/dashboard/views/add-book.vue'),
-          meta: { title: '图书管理', icon: 'dashboard' }
+          meta: { title: '图书管理', icon: 'dashboard', roles: ['superAdmin'] }
         },
       ]
   },
@@ -106,12 +118,14 @@ export const constantRoutes = [
   {
     path: '/form',
     component: Layout,
+    prems: 'superAdmin',
+    meta: { title: '用户管理', icon: 'user', roles: ['superAdmin'] },
     children: [
       {
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: '用户管理', icon: 'user' }
+        meta: { title: '用户管理', icon: 'user', roles: ['superAdmin'] }
       }
     ]
   },
@@ -119,12 +133,13 @@ export const constantRoutes = [
   {
     path: '/records',
     component: Layout,
+    meta: { title: '借还记录', icon: 'link', roles: ['superAdmin'] },
     children: [
       {
         path: 'index',
         name: 'records',
         component: () => import('@/views/records/index'),
-        meta: { title: '借还记录', icon: 'link' }
+        meta: { title: '借还记录', icon: 'link', roles: ['superAdmin'] }
       }
     ]
   },
@@ -132,12 +147,13 @@ export const constantRoutes = [
   {
     path: '/announcement',
     component: Layout,
+    meta: { title: '公告管理', icon: 'eye-open', roles: ['superAdmin'] },
     children: [
       {
         path: 'index',
         name: 'Announcement',
         component: () => import('@/views/announcement/index'),
-        meta: { title: '公告管理', icon: 'eye-open' }
+        meta: { title: '公告管理', icon: 'eye-open', roles: ['superAdmin'] }
       }
     ]
   },
@@ -145,125 +161,44 @@ export const constantRoutes = [
   {
     path: '/admin-rules',
     component: Layout,
+    meta: { title: '读者规则', icon: 'table', roles: ['superAdmin'] },
     children: [
       {
         path: 'index',
         name: 'Admin-rules',
         component: () => import('@/views/adminrules/index'),
-        meta: { title: '读者规则', icon: 'table' }
+        meta: { title: '读者规则', icon: 'table', roles: ['superAdmin'] }
       }
     ]
   },
 
-  // {
-  //   path: '/edit-user',
-  //   name: 'edit-user',
-  //   component: () => import('@/views/form/edit-user.vue'),
-  //   meta: { title: '用户管理', icon: 'user' }
-  // },
-
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   meta: {
-  //     title: 'Nested',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: 'Menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: 'Menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'Menu1-2',
-  //           meta: { title: 'Menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'Menu1-2-1',
-  //               meta: { title: 'Menu1-2-1' }
-  //             },
-  //             {
-  //               path: 'menu1-2-2',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //               name: 'Menu1-2-2',
-  //               meta: { title: 'Menu1-2-2' }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'Menu1-3',
-  //           meta: { title: 'Menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       name: 'Menu2',
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-
   {
     path: '/example',
     component: Layout,
+    prems: 'normal',
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: '操作', icon: 'el-icon-s-help' },
+    meta: { title: '查询图书', icon: 'dashboard', roles: ['normal'] },
     children: [
       {
         path: 'table',
         name: 'Table',
         component: () => import('@/views/search/index'),
-        meta: { title: '查询图书', icon: 'dashboard' }
+        meta: { title: '查询图书', icon: 'dashboard', roles: ['normal'] }
       },
-      // {
-      //   path: 'tree',
-      //   name: 'Tree',
-      //   component: () => import('@/views/buy/index'),
-      //   meta: { title: '购买图书', icon: 'form' }
-      // },
-      // {
-      //   path: 'borrow',
-      //   name: 'borrow',
-      //   component: () => import('@/views/borrow/index'),
-      //   meta: { title: '借阅图书', icon: 'link' }
-      // },
-      // {
-      //   path: 'give',
-      //   name: 'give',
-      //   component: () => import('@/views/give/index'),
-      //   meta: { title: '归还图书', icon: 'tree' }
-      // }
     ]
   },
 
   {
     path: '/list',
     component: Layout,
+    meta: { title: '借还列表', icon: 'link', roles: ['normal'] },
     children: [
       {
         path: 'index',
         name: 'List',
         component: () => import('@/views/list/index'),
-        meta: { title: '借还列表', icon: 'link' }
+        meta: { title: '借还列表', icon: 'link', roles: ['normal'] }
       }
     ]
   },
@@ -271,12 +206,13 @@ export const constantRoutes = [
   {
     path: '/rules',
     component: Layout,
+    meta: { title: '读者规则', icon: 'table', roles: ['normal'] },
     children: [
       {
         path: 'index',
         name: 'Rules',
         component: () => import('@/views/rules/index'),
-        meta: { title: '读者规则', icon: 'table' }
+        meta: { title: '读者规则', icon: 'table', roles: ['normal'] }
       }
     ]
   },
@@ -284,30 +220,16 @@ export const constantRoutes = [
   {
     path: '/announce-reader',
     component: Layout,
+    meta: { title: '查看公告', icon: 'eye-open', roles: ['normal'] },
     children: [
       {
         path: 'index',
         name: 'Announcement-reader',
         component: () => import('@/views/announcereader/index'),
-        meta: { title: '查看公告', icon: 'eye-open' }
+        meta: { title: '查看公告', icon: 'eye-open', roles: ['normal'] }
       }
     ]
   },
-
-  
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

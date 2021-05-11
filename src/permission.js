@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-23 13:27:42
+ * @LastEditTime: 2021-05-11 19:34:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\permission.js
@@ -18,6 +18,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
+
+
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -29,7 +31,8 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
-    console.log(to)
+    // console.log(to)
+    
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
@@ -42,6 +45,12 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           await store.dispatch('user/getInfo')
+          // generate accessible routes map based on roles
+          const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.roles)
+
+          // dynamically add accessible routes
+          router.addRoutes(accessRoutes)
+          
           next()
         } catch (error) {
           // remove token and go to login page to re-login
@@ -70,3 +79,4 @@ router.afterEach(() => {
   // finish progress bar
   NProgress.done()
 })
+

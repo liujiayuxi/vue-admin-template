@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-04-20 21:42:04
+ * @LastEditTime: 2021-05-11 19:44:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\store\getters.js
@@ -13,6 +13,7 @@ const getters = {
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   id: state => state.user.id,
-  // userInfo: state => state.user.userInfo,
+  roles: state => state.user.roles,
+  permission_routes: state => state.permission.routes
 }
 export default getters
