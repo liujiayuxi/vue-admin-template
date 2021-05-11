@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-02 17:07:15
- * @LastEditTime: 2021-05-11 15:06:00
+ * @LastEditTime: 2021-05-11 21:21:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\rules\index.vue
@@ -115,12 +115,7 @@
                     type: 'input',
                     prop: 'borrowNum',
                     value: ''
-                },{
-                    label: '规则描述',
-                    type: 'textarea',
-                    prop: 'borrowLibrary',
-                    value: ''
-                },],
+                }],
                 id: '',
                 deleteDialogVisible: false
             }
@@ -146,6 +141,7 @@
                 ).catch( err => this.$message.error(err.message) )
             },
             addRules(){
+                this.dialogTitle = '添加规则'
                 this.dialogFormVisible = true
             },
             editRow(row){
@@ -187,17 +183,27 @@
                 })
                 if(this.dialogTitle == '编辑规则'){
                     confirmObj.id = this.id
+                    await this.$api.ruleManageApi.editRule(confirmObj).then(res => {
+                        let {code, msg} = res
+                        if(code !== 200)throw new Error(msg)
+                        this.$message.success(msg)
+                        this.cancelDialog()
+                        this.getRules()
+                    }).catch(e => {
+                        this.$message.error(e.message)
+                    })
+                }else if(this.dialogTitle == '添加规则'){
+                    await this.$api.ruleManageApi.addRule(confirmObj).then(res => {
+                        let {code, msg} = res
+                        if(code !== 200)throw new Error(msg)
+                        this.$message.success(msg)
+                        this.cancelDialog()
+                        this.getRules()
+                    }).catch(e => {
+                        this.$message.error(e.message)
+                    })
                 }
-                console.log(confirmObj)
-                await this.$api.ruleManageApi.addRule(confirmObj).then(res => {
-                    let {code, msg} = res
-                    if(code !== 200)throw new Error(msg)
-                    this.$message.success(msg)
-                    this.cancelDialog()
-                    this.getRules()
-                }).catch(e => {
-                    this.$message.error(e.message)
-                })
+                
             },
             beforeClose(done){
                 this.form.forEach(item => {

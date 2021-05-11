@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-11 11:30:39
- * @LastEditTime: 2021-05-11 11:33:53
+ * @LastEditTime: 2021-05-11 21:08:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\api\ruleManage.js
@@ -22,3 +22,8 @@ export function addRule(params = {}) {
 export function deleteRule(id, params = {}) {
     return request.delNormal(`/library/rule/${id}`, params)
   }
+
+// 修改借书规则
+export function editRule(params = {}) {
+  return request.putNormal('/library/rule', params)
+}
