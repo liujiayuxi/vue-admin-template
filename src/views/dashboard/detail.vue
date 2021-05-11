@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-25 09:35:34
- * @LastEditTime: 2021-04-21 21:01:33
+ * @LastEditTime: 2021-05-10 14:15:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\detail.vue
@@ -9,26 +9,30 @@
 <template>
   <div class="detail">
     <div class="detail-container">
-      <div class="detail-data">
-        <p class="name">书名</p>
-        <p class="value">{{ detailData.name }}</p>
+      <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" />
+      <div class="describe">
+        <div class="detail-data">
+          <p class="name">书名</p>
+          <p class="value">{{ detailData.name }}</p>
+        </div>
+        <div class="detail-data">
+          <p class="name">出版社</p>
+          <p class="value">{{ detailData.publisher }}</p>
+        </div>
+        <div class="detail-data">
+          <p class="name">作者</p>
+          <p class="value">{{ detailData.author }}</p>
+        </div>
+        <div class="detail-data">
+          <p class="name">ISBN</p>
+          <p class="value">{{ detailData.description }}</p>
+        </div>
+        <div class="detail-data">
+          <p class="name">类别</p>
+          <p class="value">{{ detailType }}</p>
+        </div>
       </div>
-      <div class="detail-data">
-        <p class="name">出版社</p>
-        <p class="value">{{ detailData.publisher }}</p>
-      </div>
-      <div class="detail-data">
-        <p class="name">作者</p>
-        <p class="value">{{ detailData.author }}</p>
-      </div>
-      <div class="detail-data">
-        <p class="name">ISBN</p>
-        <p class="value">{{ detailData.description }}</p>
-      </div>
-      <div class="detail-data">
-        <p class="name">类别</p>
-        <p class="value">{{ detailType }}</p>
-      </div>
+      
     </div>
   </div>
 </template>
@@ -94,48 +98,61 @@ export default {
 .detail {
   &-container {
     padding: 0 0 20px 40px;
-    .detail-data {
-      margin-top: 22px;
-      .name {
-        display: inline-block;
-        width: 100px;
-        height: 17px;
-        vertical-align: top;
-        margin-right: 20px;
-        font-size: 16px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(162, 162, 162, 1);
-      }
-      .value {
-        display: inline-block;
-        width: 200px;
-        height: 14px;
-        vertical-align: top;
-        font-size: 16px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(74, 74, 74, 1);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    img{
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+    }
+    .describe{
+      // width: 250px;
+      .detail-data {
+        // display: flex;
+        // justify-content: space-between;
+        .name {
+          display: inline-block;
+          width: 90px;
+          height: 17px;
+          vertical-align: top;
+          margin-right: 20px;
+          font-size: 16px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: rgba(162, 162, 162, 1);
+        }
+        .value {
+          display: inline-block;
+          width: 160px;
+          height: 14px;
+          vertical-align: top;
+          font-size: 16px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: rgba(74, 74, 74, 1);
+        }
       }
     }
-    .btn {
-      width: 120px;
-      height: 40px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 1);
-      border: 1px solid rgba(231, 235, 235, 1);
-      border-radius: 4px;
-      margin-left: 100px;
-      margin-top: 37px;
-      .close {
-        line-height: 40px;
-        text-align: center;
-        font-size: 16px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(74, 74, 74, 1);
-      }
-    }
+    
+    // .btn {
+    //   width: 120px;
+    //   height: 40px;
+    //   cursor: pointer;
+    //   background: rgba(255, 255, 255, 1);
+    //   border: 1px solid rgba(231, 235, 235, 1);
+    //   border-radius: 4px;
+    //   margin-left: 100px;
+    //   margin-top: 37px;
+    //   .close {
+    //     line-height: 40px;
+    //     text-align: center;
+    //     font-size: 16px;
+    //     font-family: Microsoft YaHei;
+    //     font-weight: 400;
+    //     color: rgba(74, 74, 74, 1);
+    //   }
+    // }
   }
 }
 </style>

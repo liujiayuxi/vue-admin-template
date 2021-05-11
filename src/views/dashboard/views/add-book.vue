@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-03 17:28:37
- * @LastEditTime: 2021-04-22 13:48:59
+ * @LastEditTime: 2021-05-11 10:41:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\dashboard\views\add-book.vue
@@ -18,7 +18,7 @@
       <p class="back" @click="cancel">返回</p>
     </div>
     <div class="add-book-content">
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px" label-position="left">
         <el-form-item label="类别">
           <el-select v-model="form.sortId" placeholder="请选择图书类别">
             <el-option
@@ -42,9 +42,39 @@
         <el-form-item label="ISBN">
           <el-input v-model="form.description" style="width: 400px"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="备注" prop="tips">
-                    <el-input type="textarea" v-model="form.tips" resize="none" rows="3" style="width: 400px"></el-input>
-                </el-form-item> -->
+        <el-form-item label="上传图片">
+          <el-upload
+          action="#"
+          ref="pictureUpload"
+          list-type="picture-card"
+          :auto-upload="false">
+            <i slot="default" class="el-icon-plus"></i>
+            <div slot="file" slot-scope="{file}">
+              <img
+                class="el-upload-list__item-thumbnail"
+                :src="file.url" alt=""
+              >
+              <span class="el-upload-list__item-actions">
+                <span
+                  class="el-upload-list__item-preview"
+                  @click="handlePictureCardPreview(file)"
+                >
+                  <i class="el-icon-zoom-in"></i>
+                </span>
+                <span
+                  v-if="!disabled"
+                  class="el-upload-list__item-delete"
+                  @click="handleRemove(file)"
+                >
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
+            </div>
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisible">
+          <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">确定</el-button>
           <el-button @click="cancel">取消</el-button>
@@ -129,6 +159,9 @@ export default {
           value: 15,
         },
       ],
+      dialogImageUrl: '',
+      dialogVisible: false,
+      disabled: false
     };
   },
   methods: {
@@ -139,7 +172,14 @@ export default {
     // 提交
     async onSubmit() {
       try {
-        let { code, msg } = await this.$api.bookManageApi.addBook(this.form);
+        let imgFile = this.$refs.pictureUpload.uploadFiles[0]
+        console.log(imgFile);
+        let formData = new FormData()
+        formData.append('coverFile', imgFile)
+        for(let key in this.form){
+          formData.append(key, this.form[key])
+        }
+        let { code, msg } = await this.$api.bookManageApi.addBook(formData);
         if(code!== 200) throw new Error(msg)
         this.$message.success(msg)
         this.$router.push("/dashboard/index");
@@ -147,6 +187,17 @@ export default {
         this.$message.error(e.message);
       }
     },
+    handleRemove(file) {
+        let tempIndex = this.$refs.pictureUpload.uploadFiles.findIndex(value => {
+          return value.uid == file.uid
+        })
+        this.$refs.pictureUpload.uploadFiles.splice(tempIndex, 1)
+      },
+      handlePictureCardPreview(file) {
+        console.log(this.$refs.pictureUpload)
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
   },
 };
 </script>
@@ -164,8 +215,10 @@ export default {
     }
   }
   &-content {
+    width: 40%;
     padding: 20px;
     box-shadow: 0px 0px 8px 0px rgba(0, 24, 16, 0.08);
+    margin-left: 2%;
   }
 }
 </style>

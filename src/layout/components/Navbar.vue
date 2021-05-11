@@ -8,7 +8,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-          <img :src="squareUrl" class="user-avatar">
+          <img :src="imgUrl" class="user-avatar">
           <!-- <el-avatar shape="square" :size="size" :src="squareUrl"></el-avatar> -->
           <i class="el-icon-caret-bottom" />
         </div>
@@ -61,7 +61,7 @@ export default {
   },
   data() {
     return {
-      squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
+      imgUrl: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
     }
   },
   methods: {
