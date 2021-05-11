@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-05-10 10:39:00
+ * @LastEditTime: 2021-05-11 10:54:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -16,14 +16,14 @@
       <tab-list :list="tabList" @change="changTab"></tab-list>
       <div class="search-container-wrap">
         <div class="search-container-book" v-if="libraryBookList.length">
-          <div
+          <!-- <div
             class="search-container-book-item"
             v-for="(item, index) in libraryBookList"
             :key="index"
-          >
-            <div class="search-container-book-item-type" :style="{'color':getColor(item.sortId), 'background':getBackground(item.sortId)}">{{ getText(item.sortId) }}</div>
+          > -->
+            <!-- <div class="search-container-book-item-type" :style="{'color':getColor(item.sortId), 'background':getBackground(item.sortId)}">{{ getText(item.sortId) }}</div> -->
             <!-- <img src="@/assets/image/bookpic.jpg" /> -->
-            <div class="search-container-book-item-word">
+            <!-- <div class="search-container-book-item-word">
               <div class="search-container-book-item-name">
                 {{ item.name }}
               </div>
@@ -31,7 +31,20 @@
                 <el-button @click="showDetail(item)">查看详情</el-button>
                 <el-button @click="borrow(item)" :disabled="item.borrowStatus == '在库' ? false : true ">{{getBtnText(item.borrowStatus)}}</el-button>
               </div>
-            </div>
+            </div> -->
+          <!-- </div> -->
+          <el-card :body-style="{ padding: '0px' }" class="search-container-book-item" v-for="(item, index) in libraryBookList" :key="index">
+              <img :src="item.cover ? item.cover : require('@/assets/image/nodata.png')" class="image">
+              <div style="padding: 14px;">
+                <span>{{item.name}}</span> 
+                <span class="search-container-book-item-type" :style="{color: getColor(item.sortId), background: getBackground(item.sortId),}">{{ getText(item.sortId) }}</span>
+                <div class="bottom clearfix">
+                  <el-button type="text" @click="showDetail(item)">查看详情</el-button>
+                  <!-- <el-button type="text" @click="deleteBook(item.id)">下架</el-button> -->
+                  <el-button type="text" @click="borrow(item)" :disabled="item.borrowStatus == '在库' ? false : true ">{{getBtnText(item.borrowStatus)}}</el-button>
+                </div>
+              </div>
+            </el-card>
             <!-- 查看详情 -->
             <el-dialog
               v-if="showDetailVisible"
@@ -69,7 +82,6 @@
               </div>
             </el-dialog>
 
-          </div>
         </div>
         <div class="no-data" v-else-if="!libraryBookList.length">暂无数据</div>
       </div>
@@ -388,32 +400,28 @@ export default {
     justify-content: flex-start;
     align-items: center;
     &-item {
-      width: 280px;
-      height: 130px;
       background: rgba(255, 255, 255, 1);
       box-shadow: 0px 0px 8px 0px rgba(0, 24, 16, 0.08);
       border-radius: 4px;
       margin: 5px;
-      padding: 6px 24px;
+      padding: 6px 20px 0 20px;
       display: flex;
       justify-content: space-between;
-      // img {
-      //   width: 130px;
-      //   height: 165px;
-      // }
-      &-word {
-        font-family: "微软雅黑";
-        font-weight: 400;
+      .image{
+        width: 280px;
+        height: 250px;
       }
       &-type {
         width: 20px;
         height: fit-content;
         padding: 2px;
-        margin-top: 10px;
+        // margin-top: 10px;
+        margin-left: 6px;
         background: rgba($color: #000000, $alpha: 1.0);
         font-family: "微软雅黑";
         font-weight: 400;
         border-radius: 6px;
+        font-size: 10px;
       }
       &-name {
         width: 190px;

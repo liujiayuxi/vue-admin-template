@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-25 09:35:34
- * @LastEditTime: 2021-04-22 14:15:19
+ * @LastEditTime: 2021-05-11 11:17:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\detail.vue
@@ -9,6 +9,7 @@
 <template>
   <div class="detail">
     <div class="detail-container">
+      <img :src="detailData.cover ? detailData.cover : require('@/assets/image/nodata.png')" />
       <div class="detail-data">
         <p class="name">书名</p>
         <p class="value">{{ detailData.name }}</p>
@@ -94,8 +95,16 @@ export default {
 .detail {
   &-container {
     padding: 0 0 20px 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    img{
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+    }
     .detail-data {
-      margin-top: 22px;
+      // margin-top: 22px;
       .name {
         display: inline-block;
         width: 100px;
@@ -109,27 +118,9 @@ export default {
       }
       .value {
         display: inline-block;
-        width: 200px;
+        width: 180px;
         height: 14px;
         vertical-align: top;
-        font-size: 16px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(74, 74, 74, 1);
-      }
-    }
-    .btn {
-      width: 120px;
-      height: 40px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 1);
-      border: 1px solid rgba(231, 235, 235, 1);
-      border-radius: 4px;
-      margin-left: 100px;
-      margin-top: 37px;
-      .close {
-        line-height: 40px;
-        text-align: center;
         font-size: 16px;
         font-family: Microsoft YaHei;
         font-weight: 400;

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-25 09:35:34
- * @LastEditTime: 2021-05-10 14:15:17
+ * @LastEditTime: 2021-05-11 11:17:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\detail.vue
@@ -9,7 +9,7 @@
 <template>
   <div class="detail">
     <div class="detail-container">
-      <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" />
+      <img :src="detailData.cover ? detailData.cover : require('@/assets/image/nodata.png')" />
       <div class="describe">
         <div class="detail-data">
           <p class="name">书名</p>
@@ -124,7 +124,7 @@ export default {
         }
         .value {
           display: inline-block;
-          width: 160px;
+          width: 180px;
           height: 14px;
           vertical-align: top;
           font-size: 16px;
@@ -135,24 +135,6 @@ export default {
       }
     }
     
-    // .btn {
-    //   width: 120px;
-    //   height: 40px;
-    //   cursor: pointer;
-    //   background: rgba(255, 255, 255, 1);
-    //   border: 1px solid rgba(231, 235, 235, 1);
-    //   border-radius: 4px;
-    //   margin-left: 100px;
-    //   margin-top: 37px;
-    //   .close {
-    //     line-height: 40px;
-    //     text-align: center;
-    //     font-size: 16px;
-    //     font-family: Microsoft YaHei;
-    //     font-weight: 400;
-    //     color: rgba(74, 74, 74, 1);
-    //   }
-    // }
   }
 }
 </style>
