@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-03 17:28:37
- * @LastEditTime: 2021-05-11 10:41:28
+ * @LastEditTime: 2021-05-11 20:08:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\dashboard\views\add-book.vue
@@ -175,7 +175,7 @@ export default {
         let imgFile = this.$refs.pictureUpload.uploadFiles[0]
         console.log(imgFile);
         let formData = new FormData()
-        formData.append('coverFile', imgFile)
+        formData.append('coverFile', imgFile.raw)
         for(let key in this.form){
           formData.append(key, this.form[key])
         }

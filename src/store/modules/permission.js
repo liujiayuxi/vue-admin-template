@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-11 19:02:09
- * @LastEditTime: 2021-05-11 19:37:25
+ * @LastEditTime: 2021-05-11 20:02:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\store\modules\permission.js
@@ -63,7 +63,6 @@ const actions = {
       // } else {
         // console.log(roles, asyncRoutes)
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-        console.log(accessedRoutes)
       // }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-04 18:17:08
- * @LastEditTime: 2021-04-29 18:17:18
+ * @LastEditTime: 2021-05-11 20:50:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\records\index.vue
@@ -138,11 +138,11 @@
           <el-table-column prop="bookName" label="书名"> </el-table-column>
           <el-table-column prop="borrowId" label="借阅证" sortable>
           </el-table-column>
-          <el-table-column prop="borrowTime" label="借书日期" sortable width="150px">
+          <el-table-column prop="borrowTime" label="借书日期" sortable width="100px">
           </el-table-column>
-          <el-table-column prop="lendTime" label="还书日期" sortable width="150px">
+          <el-table-column prop="lendTime" label="还书日期" sortable width="100px">
           </el-table-column>
-          <el-table-column prop="handlePerson" label="处理人" sortable>
+          <el-table-column prop="modifyTime" label="处理时间" sortable width="100px">
           </el-table-column>
         </el-table>
       </el-dialog>
@@ -312,7 +312,7 @@ export default {
                 bookName: item.book.name,
                 borrowTime: item.borrowDate,
                 lendTime: item.returnDate,
-                handlePerson: "张三",
+                modifyTime: item.modifyTime
               })
           })
           this.$set(this.$data, "detailData", tempArr);

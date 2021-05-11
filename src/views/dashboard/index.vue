@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-01 11:45:33
- * @LastEditTime: 2021-05-11 10:46:35
+ * @LastEditTime: 2021-05-11 20:10:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\search\index.vue
@@ -366,8 +366,8 @@ export default {
       display: flex;
       justify-content: space-between;
       .image{
-        width: 280px;
-        height: 250px;
+        width: 250px;
+        height: 254px;
       }
       &-type {
         width: 20px;
