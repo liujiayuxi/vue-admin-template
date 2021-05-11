@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-02 17:07:15
- * @LastEditTime: 2021-05-11 14:21:40
+ * @LastEditTime: 2021-05-11 14:58:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\rules\index.vue
@@ -86,7 +86,6 @@
         watch: {
             pageConfig: {
                 handler(n) {
-                    console.log(n);
                     this.getRules();
                 },
                 deep: true,
@@ -95,7 +94,7 @@
         },
         methods: {
             async getRules() {
-                await this.$api.ruleManageApi.ruleList().then(res => {
+                await this.$api.ruleManageApi.ruleList(this.pageConfig).then(res => {
                         let {code,msg, rows, total} = res;
                         if(+code !== 200) throw new Error(msg);
                         this.total = total
