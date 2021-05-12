@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-12 15:32:46
- * @LastEditTime: 2021-05-11 18:01:36
+ * @LastEditTime: 2021-05-12 16:48:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admin-template\src\views\login\components\username-login.vue
@@ -167,7 +167,8 @@ export default {
             .dispatch("user/login", this.loginForm)
             .then((res) => {
               // console.log(res)
-              this.$router.push({ path: this.redirect || "/" });
+              this.$router.push({ path: "/" });
+              // this.$router.push({ path: this.redirect || "/" });
               
             })
             .catch(e => {

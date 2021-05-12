@@ -204,20 +204,6 @@ export const asyncRoutes = [
   },
 
   {
-    path: '/rules',
-    component: Layout,
-    meta: { title: '读者规则', icon: 'table', roles: ['normal'] },
-    children: [
-      {
-        path: 'index',
-        name: 'Rules',
-        component: () => import('@/views/rules/index'),
-        meta: { title: '读者规则', icon: 'table', roles: ['normal'] }
-      }
-    ]
-  },
-
-  {
     path: '/announce-reader',
     component: Layout,
     meta: { title: '查看公告', icon: 'eye-open', roles: ['normal'] },
@@ -227,6 +213,20 @@ export const asyncRoutes = [
         name: 'Announcement-reader',
         component: () => import('@/views/announcereader/index'),
         meta: { title: '查看公告', icon: 'eye-open', roles: ['normal'] }
+      }
+    ]
+  },
+
+  {
+    path: '/rules',
+    component: Layout,
+    meta: { title: '读者规则', icon: 'table', roles: ['normal'] },
+    children: [
+      {
+        path: 'index',
+        name: 'Rules',
+        component: () => import('@/views/rules/index'),
+        meta: { title: '读者规则', icon: 'table', roles: ['normal'] }
       }
     ]
   },

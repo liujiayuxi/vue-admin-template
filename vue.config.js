@@ -16,6 +16,12 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 // process.env.VUE_APP_CONFIG = JSON.stringify(require('./src/config/config.dev'));
 
+let publicPath = '/';
+if (process.env.NODE_ENV === 'development') {
+  publicPath='/'
+} else if (process.env.NODE_ENV === 'production') {
+  publicPath='/ts/'
+}
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   /**
@@ -25,7 +31,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/ts/',
+  publicPath,
   outputDir: 'dist/ts',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
