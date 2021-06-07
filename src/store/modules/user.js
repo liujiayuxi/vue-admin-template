@@ -7,7 +7,7 @@
  * @FilePath: \vue-admin-template\src\store\modules\user.js
  */
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setUsername, getUsername, removeUsername } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { authorizationValue } from '@/settings'
 
@@ -58,6 +58,7 @@ const actions = {
         commit('SET_TOKEN', authorizationValue + response.token)
         commit('SET_NAME', response.username)
         setToken(response.token)
+        setUsername(response.username)
         resolve()
       }).catch(error => {
         reject(error)
@@ -68,7 +69,8 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.name).then(response => {
+      const name = state.name || getUsername();
+      getInfo(name).then(response => {
         console.log(response)
         const { data } = response
 
@@ -111,6 +113,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
+      removeUsername()
       commit('RESET_STATE')
       resolve()
     })
