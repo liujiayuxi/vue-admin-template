@@ -11,7 +11,7 @@
         <div class="title">借书规则</div>
         <div class="tips">温馨提示：请读者借书前仔细阅读读者规则，本图书管理系统将严格按照此规则进行管理。</div>
         <div class="rules-table">
-            <el-table :data="tableList">
+            <el-table :data="tableList" :row-style="rowStyle">
                 <el-table-column
                     v-for="item in headData"
                     :key="item.prop" 
@@ -102,6 +102,19 @@
                     }
                 ).catch( err => this.$message.error(err.message) )
             },
+            async getUserInfo(){
+                await this.$api.singleInfoApi.getSingleInfo(this.$store.getters.id).then(
+                    res => {
+                        let {code,msg, data} = res;
+                        if(+code !== 200) throw new Error(msg);
+                        this.ruleId = data.rule;
+                    }
+                )
+            },
+            rowStyle({row}){
+                console.log(row)
+                return row.id === this.ruleId ? ({color:'red'}) : {}
+            },
             handleSizeChange(val) {
                 this.pageConfig.pageNum = 1
                 this.pageConfig.pageSize = val
@@ -122,7 +135,8 @@
                 done()
             }
         },
-        mounted() {
+        async mounted() {
+            await this.getUserInfo();
             this.getRules();
         }
     }

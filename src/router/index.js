@@ -82,9 +82,6 @@ export const constantRoutes = [
         meta: { title: '图书馆信息', icon: 'el-icon-document-copy' }
       }]
   },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
 
 
@@ -230,6 +227,8 @@ export const asyncRoutes = [
       }
     ]
   },
+    // 404 page must be placed at the end !!!
+    { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
